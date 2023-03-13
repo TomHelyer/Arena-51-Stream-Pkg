@@ -29,17 +29,18 @@ const createStyles = createUseStyles({
     nameCont:{
         display: "flex",
         position: "relative",
-        top: "73%",
+        top: "73.5%",
         width: "100%",
     },
     name: {
         position: "absolute",
-        fontSize: "300%",
+        fontSize: "3em",
         color: "white",
         marginTop: "0",
         marginBottom: "0",
         textAlign: "center",
         width: "33%",
+        fontFamily: "technovier",
     },
     nameRight: {
         left: "67%"
