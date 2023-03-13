@@ -6,7 +6,7 @@ import NextMap from "../NextMap";
 
 const useStyles = createUseStyles({
     scene: {
-        fontSize: "24%", //must be the same as the width of sceneCont
+        fontSize: "4px"
     },
     sceneCont: {
         width: "24%",
