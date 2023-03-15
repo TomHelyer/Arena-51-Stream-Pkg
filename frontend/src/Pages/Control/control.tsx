@@ -17,6 +17,14 @@ const useStyles = createUseStyles({
         display: "flex",
         justifyContent: "center",
         alignContent: "center",
+    },
+    casterData:{
+        display: "flex",
+        alignContent: "flex-start",
+        justifyContent: "flex-start",
+    },
+    block:{
+        flexGrow: "1",
     }
 });
 
@@ -52,7 +60,7 @@ const Control = () => {
     return (
     <>
         <div>
-            <select value={map} onChange={(e) => {
+            Next Map: <select value={map} onChange={(e) => {
                 setMap(e.target.value);
                 fetch('http://localhost:8080/nextmap', {
                     method: 'POST',
@@ -70,24 +78,52 @@ const Control = () => {
                     })
                 }
             </select>
-            <input type="text" value={casters[0]? (casters[0] as CasterObject).name : ""} onChange={(e) => {
-                setCasters({...casters,
-                    0: {
-                        name: e.target.value,
-                        vdo: casters[0]?.vdo
-                    }
-                }
-                    
-                );
-            }}/>
-            <input type="text" value={casters[1]? (casters[1] as CasterObject).name: ""} onChange={(e) => {
-                setCasters({...casters,
-                    1: {
-                        name: e.target.value,
-                        vdo: casters[1]?.vdo
-                    }
-                });
-            }}/>
+            <div className={styles.casterData}>
+                <div className={styles.block}>
+                    Caster Name: <input type="text" value={casters[0]? (casters[0] as CasterObject).name : ""} onChange={(e) => {
+                        setCasters({...casters,
+                            0: {
+                                name: e.target.value,
+                                vdo: casters[0]?.vdo
+                            }
+                        });
+                    }}/>
+                
+                </div>
+                <div className={styles.block}>
+                    Caster VDO Link: <input type="text" placeholder="VDO ninja link here" value={casters[0]? (casters[0] as CasterObject).vdo ?? undefined: undefined} onChange={(e) => {
+                        setCasters({...casters,
+                            0: {
+                                name: casters[0]?.name ?? "",
+                                vdo: e.target.value
+                            }
+                        });
+                    }}/>
+                </div>
+            </div>
+            
+            <div className={styles.casterData}>
+                <div className={styles.block}>
+                    Caster Name: <input type="text" value={casters[1]? (casters[1] as CasterObject).name: ""} onChange={(e) => {
+                        setCasters({...casters,
+                            1: {
+                                name: e.target.value,
+                                vdo: casters[1]?.vdo
+                            }
+                        });
+                    }}/>
+                </div>
+                <div className={styles.block}>
+                    Caster VDO Link: <input type="text" placeholder="VDO ninja link here" value={casters[1]? (casters[1] as CasterObject).vdo ?? undefined: undefined} onChange={(e) => {
+                        setCasters({...casters,
+                            0: {
+                                name: casters[1]?.name ?? "",
+                                vdo: e.target.value
+                            }
+                        });
+                    }}/>
+                </div>
+            </div>
         </div>
         <div className={styles.col}>
             <div className={styles.sceneCont}>
