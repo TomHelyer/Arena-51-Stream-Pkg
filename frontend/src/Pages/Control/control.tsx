@@ -6,10 +6,10 @@ import NextMap from "../NextMap";
 
 const useStyles = createUseStyles({
     scene: {
-        fontSize: "4px"
+        fontSize: `${500/1920}em`
     },
     sceneCont: {
-        width: "24%",
+        width: "500px",
         minWidth: "200px",
         padding: "0.5%",
     },
@@ -30,7 +30,9 @@ const useStyles = createUseStyles({
 
 const Control = () => {
     const [map, setMap] = useState("");
-    const [casters, setCasters]= useState({} as CastersObject);
+    const [casters, setCasters]= useState([] as CastersObject);
+    const [score, setScore] = useState([0,0]);
+    const [match, setMatch] = useState({} as MatchInfoObject);
     const styles = useStyles();
 
     useEffect(() => {
@@ -39,8 +41,16 @@ const Control = () => {
         }).catch(err => console.log(err));
 
         fetch('http://localhost:8080/casters').then(res => {
-            res.json().then(val => setCasters(val.casters)).catch(err => console.log(err))
+            res.json().then(val => setCasters(val)).catch(err => console.log(err))
         }).catch(err => console.log(err));
+
+        fetch('http://localhost:8080/scoreboard').then(res => {
+            if(res.status === 200)
+                res.json().then(val => {
+                    setScore(val.score);
+                    setMatch(val.match);   
+                })
+        })
     }, []);
 
     useEffect(() => {
@@ -50,9 +60,7 @@ const Control = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    "casters": casters
-                })
+                body: JSON.stringify(casters)
             }).catch(err => console.log(err));
         }   
     }, [casters])
@@ -67,9 +75,7 @@ const Control = () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        "map": e.target.value
-                    })
+                    body: JSON.stringify({ map: e.target.value})
                 }).catch(err => console.log(err));
             }}>
                 {
@@ -81,23 +87,22 @@ const Control = () => {
             <div className={styles.casterData}>
                 <div className={styles.block}>
                     Caster Name: <input type="text" value={casters[0]? (casters[0] as CasterObject).name : ""} onChange={(e) => {
-                        setCasters({...casters,
-                            0: {
+                        setCasters([{
                                 name: e.target.value,
                                 vdo: casters[0]?.vdo
-                            }
-                        });
+                            },casters[1]
+                        ]);
                     }}/>
                 
                 </div>
                 <div className={styles.block}>
                     Caster VDO Link: <input type="text" placeholder="VDO ninja link here" value={casters[0]? (casters[0] as CasterObject).vdo ?? undefined: undefined} onChange={(e) => {
-                        setCasters({...casters,
-                            0: {
+                        setCasters([
+                            {
                                 name: casters[0]?.name ?? "",
                                 vdo: e.target.value
-                            }
-                        });
+                            },casters[1]
+                        ]);
                     }}/>
                 </div>
             </div>
@@ -142,5 +147,7 @@ const Control = () => {
     </>
     )
 }
+
+
 
 export default Control;
