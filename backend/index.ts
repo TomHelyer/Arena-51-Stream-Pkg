@@ -131,11 +131,11 @@ app.post('scoreboard/score', (req, res) => {
     }
 })
 
-app.get('image/:bucket/:image', (req,res) => {
-    fs.promises.readFile(`${__dirname}/repo/${req.params.bucket}/${req.params.image}`, {encoding: 'base64'})
+app.get('/image/:bucket/:image', (req,res) => {
+    fs.promises.readFile(`${__dirname}/repo/${req.params.bucket}/${req.params.image}.png`, {encoding: 'base64'})
     .then(val => {
-
-    })
+        res.status(200).json({image: val});
+    });
 })
 
 httpServer.listen(port, () => {

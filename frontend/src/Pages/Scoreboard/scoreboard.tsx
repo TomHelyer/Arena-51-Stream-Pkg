@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 
+enum matchStates{
+    Home = 1,
+    Away = -1,
+    Draw = 0,
+    NoResult = ""
+}
+
 const createStyles = createUseStyles({
     frame: {
         position: "absolute",
@@ -32,6 +39,10 @@ const createStyles = createUseStyles({
         width: "10%",
         aspectRatio: 1,
     },
+    img: {
+        width: "100%",
+        height: "100%"
+    },
     teamName: {
         width: "70%",
         backgroundColor: "white",
@@ -58,16 +69,17 @@ const createStyles = createUseStyles({
 const Scoreboard = () => {
     const styles = createStyles();
     const [images, setImages] = useState(["",""]);
-    const [match, setMatch] = useState({
+    const [match, setMatch] = useState<MatchInfoObject>({
         home: {
-            name: "home"
+            name: "home",
+            sr: 0,
         },
         away: {
-            name: "away"
+            name: "away",
+            sr: 0
         },
-        state: {
-
-        }} as MatchInfoObject);
+        state: matchStates.NoResult
+    });
     const [score, setScore] = useState([0,0]);
 
     useEffect(() => {
@@ -79,10 +91,16 @@ const Scoreboard = () => {
 
     useEffect(() => {
         Promise.all([
-        fetch(`http://localhost:8080/image/team/${match.home.name}`).then(res => res.json()),
-        fetch(`http://localhost:8080/image/team/${match.away.name}`).then(res => {
+        fetch(`http://localhost:8080/image/team/${match.home.name.toLowerCase()}`).then(res => {
             if(res.status === 200)
-                return res.json();
+                return res.json().then(val => val.image);
+
+            console.log("Error code: ", res.status);
+            return 
+        }),
+        fetch(`http://localhost:8080/image/team/${match.away.name.toLowerCase()}`).then(res => {
+            if(res.status === 200)
+                return res.json().then(val => val.image);
 
             console.log("Error code: ", res.status);
             return 
@@ -96,7 +114,7 @@ const Scoreboard = () => {
         <div className={styles.frame}>
             <div className={styles.home}>
                 <div className={styles.logo}>
-                    <img src={images[0]} alt={match.home.name}/>
+                    <img className={styles.img} src={`data:image/png;base64, ${images[0]}`} alt={match.home.name}/>
                 </div>
                 <div className={styles.teamName}>
                     <p className={styles.text}>{match.home.name}</p>
@@ -111,7 +129,7 @@ const Scoreboard = () => {
 
             <div className={styles.away}>
                 <div className={styles.logo}>
-                    <img src={`data:image/jpeg;base64, ${images[1]}`} alt={match.away.name}/>
+                    <img className={styles.img} src={`data:image/png;base64, ${images[1]}`} alt={match.away.name}/>
                 </div>
 
                 <div className={styles.teamName}>
