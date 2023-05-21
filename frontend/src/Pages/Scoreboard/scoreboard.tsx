@@ -1,4 +1,3 @@
-import { relative } from 'path';
 import { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import push from './arrow-right-fill.svg';
@@ -29,7 +28,7 @@ const createStyles = createUseStyles({
         textAlign: "center",
         justifyContent: "space-between",
         aspectRatio: `${1920/1080}`,
-        backgroundImage: `url(${image})`,
+        //backgroundImage: `url(${image})`, //uncomment this line for styling
         backgroundSize: "100%",
         boxSizing: "border-box",
         paddingTop: "0.8%",
