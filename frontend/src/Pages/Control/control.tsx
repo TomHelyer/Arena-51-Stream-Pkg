@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import mapLookup from "../../Media/Maps";
 import CasterCams from "../CasterCams";
 import NextMap from "../NextMap";
+import Scoreboard from "../Scoreboard";
 
 const useStyles = createUseStyles({
     scene: {
@@ -17,6 +18,7 @@ const useStyles = createUseStyles({
         display: "flex",
         justifyContent: "center",
         alignContent: "center",
+        flexWrap: "wrap",
     },
     casterData:{
         display: "flex",
@@ -30,9 +32,10 @@ const useStyles = createUseStyles({
 
 const Control = () => {
     const [map, setMap] = useState("");
-    const [casters, setCasters]= useState([] as CastersObject);
-    const [score, setScore] = useState([0,0]);
-    const [match, setMatch] = useState({} as MatchInfoObject);
+    const [casters, setCasters]= useState<CastersObject>([]);
+    const [score, setScore] = useState<number[]>([0,0]);
+    const [match, setMatch] = useState<MatchInfoObject>({} as MatchInfoObject);
+    const [mapState, setMapState] = useState<mapState>(0 );
     const styles = useStyles();
 
     useEffect(() => {
@@ -48,7 +51,8 @@ const Control = () => {
             if(res.status === 200)
                 res.json().then(val => {
                     setScore(val.score);
-                    setMatch(val.match);   
+                    setMatch(val.match);  
+                    setMapState(val.mapState);
                 })
         })
     }, []);
@@ -84,6 +88,20 @@ const Control = () => {
                     })
                 }
             </select>
+            mapState: <select value={mapState} onChange={(e) => {
+                setMapState(parseInt(e.target.value));
+                fetch('http://localhost:8080/scoreboard/mapState', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mapState: e.target.value})
+                }).catch(err => console.log(err));
+            }}>
+                <option value={0} key={0}>Control/Push</option>
+                <option value={1} key={1}>Home Attack</option>
+                <option value={2} key={2}>Home Defence</option>
+            </select>
             <div className={styles.casterData}>
                 <div className={styles.block}>
                     Caster Name: <input type="text" value={casters[0]? (casters[0] as CasterObject).name : ""} onChange={(e) => {
@@ -93,7 +111,6 @@ const Control = () => {
                             },casters[1]
                         ]);
                     }}/>
-                
                 </div>
                 <div className={styles.block}>
                     Caster VDO Link: <input type="text" placeholder="VDO ninja link here" value={casters[0]? (casters[0] as CasterObject).vdo ?? undefined: undefined} onChange={(e) => {
@@ -141,6 +158,12 @@ const Control = () => {
                 <h3>Caster Cams</h3>
                 <div className={styles.scene}>
                     <CasterCams />
+                </div>
+            </div>
+            <div className={styles.sceneCont}>
+                <h3>ScoreBoard</h3>
+                <div className={styles.scene}>
+                    <Scoreboard />
                 </div>
             </div>
         </div>

@@ -13,13 +13,19 @@ declare module '*.webm' {
 enum matchStates{
     Home = 1,
     Away = -1,
-    Draw = 0,
-    NoResult = ""
+    Draw = 0
+}
+
+enum mapState{
+    Con=0,
+    Home=1,
+    Away=2,
 }
 
 type ScorebaordObject = {
     match: MatchInfoObject,
     score: number[],
+    mapState: mapState
 }
 
 type CasterObject = {
@@ -32,7 +38,7 @@ type CastersObject = CasterObject[]
 type MatchInfoObject = {
     home: TeamObject,
     away: TeamObject,
-    state: matchStates
+    state?: matchStates
 }
 
 type TeamObject = {

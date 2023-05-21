@@ -3,22 +3,17 @@ import { createUseStyles } from 'react-jss';
 import push from './arrow-right-fill.svg';
 import def from './shield-fill.svg';
 import att from './sword-fill.svg';
+import { io } from 'socket.io-client';
 const image = require('./Capture.PNG');
 
-enum matchStates{
-    Home = 1,
-    Away = -1,
-    Draw = 0,
-    NoResult = ""
-}
-
-
+const homeMapStates = [push, att, def];
+const awayMapStates = [push, def, att];
 //d63750
 //2fbbde
 
 const createStyles = createUseStyles({
     frame: {
-        position: "absolute",
+        position: "relative",
         display: "flex",
         flexDirection: "row",
         width: "100%",
@@ -107,6 +102,9 @@ const createStyles = createUseStyles({
         aspectRatio: 1,
         backgroundColor: "white",
         borderLeft: "2px solid",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
     },
     text: {
         padding: "0",
@@ -128,16 +126,32 @@ const Scoreboard = () => {
         away: {
             name: "away",
             sr: 0
-        },
-        state: matchStates.NoResult
+        }
     });
     const [score, setScore] = useState([0,0]);
+    const [mapState, setMapState] = useState<mapState>(0);
 
     useEffect(() => {
         fetch('http://localhost:8080/scoreboard').then(res => res.json().then((val: ScorebaordObject) => {
             setMatch(val.match);
             setScore(val.score);
-        }))
+            setMapState(val.mapState)
+        }));
+
+        const socket = io('http://localhost:8080');
+
+        socket.on('scoreboard:score', (score) => {
+            setScore(score);
+        });
+
+        socket.on('scoreboard:match', val => {
+            setMatch(val);
+        });
+
+        socket.on('scoreboard:mapState', (state) => {
+            setMapState(state);
+        })
+
     }, []);
 
     useEffect(() => {
@@ -161,7 +175,7 @@ const Scoreboard = () => {
         });
     }, [match]);
 
-    return (    
+    return (
         <div className={styles.frame}>
             <div className={styles.team}>
                 <div className={styles.logo}>
@@ -179,7 +193,7 @@ const Scoreboard = () => {
                     <p className={styles.text}>{score[0]}</p>
                 </div>
                 <div className={styles.icon}>
-                    <img src={push} alt=""/>
+                    <img src={homeMapStates[mapState]} alt=""/>
                 </div>
             </div>
 
@@ -199,7 +213,7 @@ const Scoreboard = () => {
                     <p className={`${styles.text} ${styles.flip}`}>{score[1]}</p>
                 </div>
                 <div className={styles.icon}>
-                    <img src={push} alt=""/>
+                    <img className={styles.img} src={awayMapStates[mapState]} alt=""/>
                 </div>
             </div>
         </div>

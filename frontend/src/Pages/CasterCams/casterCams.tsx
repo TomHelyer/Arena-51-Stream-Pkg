@@ -21,6 +21,7 @@ const createStyles = createUseStyles({
     background: {
         width: "100%",
         height: "100%",
+        top: 0,
         position: "absolute",
         objectFit: "fill"
     },
@@ -30,7 +31,7 @@ const createStyles = createUseStyles({
     nameCont:{
         display: "flex",
         position: "relative",
-        top: "73.5%",
+        top: "-26.5%",
         width: "100%",
     },
     name: {

@@ -12,6 +12,12 @@ enum matchStates{
     NoResult = ""
 }
 
+enum mapState{
+    Con=0,
+    Home=1,
+    Away=2,
+}
+
 const app = express();
 const port = 8080;
 const repoPath = path.resolve(__dirname,"/repo");
@@ -24,7 +30,7 @@ const io = new Server(httpServer, {
 });
 
 let state: stateObject = {
-    map: "busan",
+    nextMap: "busan",
     casters: [
         {
             name: "Heller"
@@ -45,7 +51,8 @@ let state: stateObject = {
                 sr: 0
             },
             state: matchStates.NoResult
-        }
+        },
+        mapState: mapState.Home,
     },
 }
 
@@ -55,7 +62,7 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/nextmap', (req, res) => {
-    res.json({map: state.map});
+    res.json({map: state.nextMap});
 })
 
 app.get('/casters', (req, res) => {
@@ -69,10 +76,10 @@ app.get('/scoreboard', (req,res) => {
 app.post('/nextmap', (req, res) => {
     if(req.body.map)
     {
-        state.map = req.body.map;
-        io.emit('nextmap', state.map);
+        state.nextMap = req.body.map;
+        io.emit('nextmap', state.nextMap);
 
-        res.status(201).json({map: state.map});
+        res.status(201).json({map: state.nextMap});
     }
 })
 
@@ -112,9 +119,9 @@ app.post('/scoreboard/match', (req, res) => {
     else{
         res.status(404).send("Invalid matchInfoObject");
     }
-})
+});
 
-app.post('scoreboard/score', (req, res) => {
+app.post('/scoreboard/score', (req, res) => {
     if(req.body && req.body.score){
         let score = req.body.score;
         if(Array.isArray(score)){
@@ -129,7 +136,25 @@ app.post('scoreboard/score', (req, res) => {
     else{
         res.status(404).send("Invalid matchInfoObject");
     }
-})
+});
+
+app.post('/scoreboard/mapState', (req, res) => {
+    if(req.body && req.body.mapState){
+        let mapState = req.body.mapState;
+        state.scoreboard.mapState = mapState;
+        if(mapState <= 2)
+        {
+            io.emit("scoreboard:mapState", mapState);
+            res.status(201).json(state.scoreboard);
+        }
+        else{
+            res.status(404).send("Invalid mapState");
+        }
+    }
+    else{
+        res.status(404).send("Invalid mapState");
+    }
+});
 
 app.get('/image/:bucket/:image', (req,res) => {
     fs.promises.readFile(`${__dirname}/repo/${req.params.bucket}/${req.params.image}.png`, {encoding: 'base64'})
@@ -159,13 +184,14 @@ const castersCheck: (obj: CastersObject) => boolean = (obj) => {
 
 type stateObject = {
     casters: CastersObject,
-    map: string,
+    nextMap: string,
     scoreboard: scoreboardObject
 }
 
 type scoreboardObject = {
     score: scoreObject,
     match: matchInfoObject,
+    mapState: mapState,
 }
 
 type matchInfoObject = {
