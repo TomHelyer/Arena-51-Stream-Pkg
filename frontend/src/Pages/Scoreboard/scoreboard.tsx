@@ -4,26 +4,49 @@ import push from './arrow-right-fill.svg';
 import def from './shield-fill.svg';
 import att from './sword-fill.svg';
 import { io } from 'socket.io-client';
+
+// const T500 = require('../../Media/Images/1.Grandmaster/Grandmaster 1.png');
+// const GM = require('../../Media/Images/1.Grandmaster/Grandmaster 1 No Shine.png');
+// const Master = require('../../Media/Images/2.Masters/Masters 1 No Shine.png');
+// const Diamond = require('../../Media/Images/3.Diamond/Diamond 1.png');
+// const Plat = require("../../Media/Images/4.Platinum/Platinum 1.png");
+// const Gold = require("../../Media/Images/5.Gold/Gold 1.png");
+// const Silver = require("../../Media/Images/6.Silver/Silver 1.png");
+// const Bronze = require("../../Media/Images/7.Bronze/Bronze 1.png"); 
+
 const image = require('./Capture.PNG');
 
 const homeMapStates = [push, att, def];
 const awayMapStates = [push, def, att];
+// const colorMap: (rank: string) => string = (rank) => {
+//     return (
+//         rank === "Top 500"? T500 :
+//         rank === "Grand Master"? GM :
+//         rank === "Master"? Master :
+//         rank === "Diamond"? Diamond :
+//         rank === "Platinum"? Plat :
+//         rank === "Gold"? Gold :
+//         rank === "Silver"? Silver :
+//         rank === "Bronze"? Bronze :
+//         ""
+//     )
+// }
 //d63750
 //2fbbde
 
 const createStyles = createUseStyles({
     frame: {
+        fontFamily: "Infinity",
         position: "relative",
         display: "flex",
         flexDirection: "row",
         width: "100%",
         height: "100%",
-        fontFamily: "technovier",
-        fontSize: "150%",
+        fontSize: "140%",
         textAlign: "center",
         justifyContent: "space-between",
         aspectRatio: `${1920/1080}`,
-        //backgroundImage: `url(${image})`, //uncomment this line for styling
+        //backgroundImage: `url(${image})`, //uncomment this line for testing purposes
         backgroundSize: "100%",
         boxSizing: "border-box",
         paddingTop: "0.8%",
@@ -43,6 +66,7 @@ const createStyles = createUseStyles({
         width: "28.55%",
         height: "3.5%",
         boxShadow: "-5px 10px 20px black",
+        backgroundColor: 'white',
     },
     away: {
         display: "flex",
@@ -52,7 +76,6 @@ const createStyles = createUseStyles({
         height: "3.5%",
     },
     logo:{
-        backgroundColor: "white",
         height: "100%",
         aspectRatio: 1,
         display: "flex",
@@ -78,9 +101,7 @@ const createStyles = createUseStyles({
         overflow: "hidden",
     },
     teamName: {
-        backgroundColor: "white",
-        borderLeft: "2px solid",
-        borderRight: "2px solid",
+        minWidth: 0,
     },
     textOnTop: {
         position: "relative",
@@ -90,9 +111,22 @@ const createStyles = createUseStyles({
         justifyContent: "center",
         alignItems: "center",
     },
+    rankCont:{
+        height: "100%",
+        aspectRatio: 1,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        overflow: "hidden",
+    },
+    rank: {
+        height: "170%",
+        aspectRatio: 1,
+    },
     score: {
-        width: "10%",
-        fontSize: "100%",
+        height: "100%",
+        aspectRatio: 1,
+        fontSize: "110%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -100,8 +134,6 @@ const createStyles = createUseStyles({
     icon: {
         height: "100%",
         aspectRatio: 1,
-        backgroundColor: "white",
-        borderLeft: "2px solid",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -121,38 +153,46 @@ const Scoreboard = () => {
     const [match, setMatch] = useState<MatchInfoObject>({
         home: {
             name: "home",
-            sr: 0,
+            rank: "Bronze",
         },
         away: {
             name: "away",
-            sr: 0
+            rank: "Bronze",
         }
     });
     const [score, setScore] = useState([0,0]);
     const [mapState, setMapState] = useState<mapState>(0);
+    const [flip, setFlip] = useState<boolean>(false);
 
     useEffect(() => {
         fetch('http://localhost:8080/scoreboard').then(res => res.json().then((val: ScorebaordObject) => {
             setMatch(val.match);
             setScore(val.score);
-            setMapState(val.mapState)
+            setMapState(val.mapState);
+            setFlip(val.flip);
         }));
 
         const socket = io('http://localhost:8080');
 
-        socket.on('scoreboard:score', (score) => {
-            setScore(score);
+        socket.on('scoreboard:score', (val) => {
+            setScore(val.score);
         });
 
         socket.on('scoreboard:match', val => {
-            setMatch(val);
+            setMatch(val.match);
         });
 
-        socket.on('scoreboard:mapState', (state) => {
-            setMapState(state);
-        })
+        socket.on('scoreboard:mapState', (val) => {
+            setMapState(val.mapState);
+        });
+        
+        socket.on('scoreboard:flip', (val) => {
+            setFlip(val.flip);
+        });
 
     }, []);
+
+    useEffect(() => {},[flip]);
 
     useEffect(() => {
         Promise.all([
@@ -176,12 +216,12 @@ const Scoreboard = () => {
     }, [match]);
 
     return (
-        <div className={styles.frame}>
-            <div className={styles.team}>
-                <div className={styles.logo}>
+        <div className={`${styles.frame} ${flip? styles.flip : ""}`}>
+            <div className={`${styles.team} ${flip? styles.flip : ""}`}>
+                <div className={`${styles.logo} `}>
                     <img className={styles.img} src={`data:image/png;base64, ${images[0]}`} alt={match.home.name[0]}/>
                 </div>
-                <div className={styles.teamName}>
+                <div className={`${styles.teamName}`}>
                     <div className={styles.backgroundImg}>
                         <img className={styles.transImg} src={`data:image/png;base64, ${images[0]}`} alt={""}/>
                     </div>
@@ -189,17 +229,17 @@ const Scoreboard = () => {
                         <p className={styles.text}>{match.home.name}</p>
                     </div>
                 </div>
-                <div className={`${styles.score} ${styles.homeCol}`}>
+                <div className={`${styles.score} ${flip? styles.awayCol : styles.homeCol}`}>
                     <p className={styles.text}>{score[0]}</p>
                 </div>
-                <div className={styles.icon}>
+                <div className={`${styles.icon} ${flip? styles.flip : ""}`}>
                     <img src={homeMapStates[mapState]} alt=""/>
                 </div>
             </div>
 
-            <div className={`${styles.team} ${styles.flip}`}>
-                <div className={styles.logo }>
-                    <img className={`${styles.img} ${styles.flip}`} src={`data:image/png;base64, ${images[1]}`} alt={match.away.name[0]}/>
+            <div className={`${styles.team} ${flip? "" : styles.flip}`}>
+                <div className={`${styles.logo} ${styles.flip}`}>
+                    <img className={styles.img} src={`data:image/png;base64, ${images[1]}`} alt={match.away.name[0]}/>
                 </div>
                 <div className={`${styles.teamName} ${styles.flip}`}>
                     <div className={styles.backgroundImg}>
@@ -209,8 +249,8 @@ const Scoreboard = () => {
                         <p className={styles.text}>{match.away.name}</p>
                     </div>
                 </div>
-                <div className={`${styles.score} ${styles.awayCol}`}>
-                    <p className={`${styles.text} ${styles.flip}`}>{score[1]}</p>
+                <div className={`${styles.score} ${flip? styles.homeCol : styles.awayCol} ${styles.flip}`}>
+                    <p className={`${styles.text}`}>{score[1]}</p>
                 </div>
                 <div className={styles.icon}>
                     <img className={styles.img} src={awayMapStates[mapState]} alt=""/>

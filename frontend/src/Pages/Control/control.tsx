@@ -4,6 +4,7 @@ import mapLookup from "../../Media/Maps";
 import CasterCams from "../CasterCams";
 import NextMap from "../NextMap";
 import Scoreboard from "../Scoreboard";
+import { io } from "socket.io-client";
 
 const useStyles = createUseStyles({
     scene: {
@@ -35,8 +36,21 @@ const Control = () => {
     const [casters, setCasters]= useState<CastersObject>([]);
     const [score, setScore] = useState<number[]>([0,0]);
     const [match, setMatch] = useState<MatchInfoObject>({} as MatchInfoObject);
-    const [mapState, setMapState] = useState<mapState>(0 );
+    const [mapState, setMapState] = useState<mapState>(0);
+    const [flip, setFlip] = useState<boolean>(false);
+    const [teams, setTeams] = useState<string[]>([]);
     const styles = useStyles();
+
+    const updateScore: (score: number[]) => void = (score) => {
+        setScore(score);
+        fetch('http://localhost:8080/scoreboard/score', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ score: score})
+                }).catch(err => console.log(err));
+    }
 
     useEffect(() => {
         fetch('http://localhost:8080/nextmap').then(res => {
@@ -53,7 +67,37 @@ const Control = () => {
                     setScore(val.score);
                     setMatch(val.match);  
                     setMapState(val.mapState);
+                    setFlip(val.flip);
                 })
+        });
+
+        fetch('http://localhost:8080/teams/list').then(res => {
+            if(res.status === 200)
+                res.json().then(val => {
+                    setTeams(val);
+                })
+        })
+        
+        const socket = io('http://localhost:8080');
+
+        socket.on('scoreboard:mapState', (val) => {
+            setMapState(val.mapState);
+        });
+
+        socket.on('scoreboard:score', (val) => {
+            setScore(val.score);
+        });
+
+        socket.on('scoreboard:match', (val) => {
+            setMatch(val.match);
+        });
+
+        socket.on('scoreboard:flip', (val) => {
+            setFlip(val.flip);
+        });
+
+        socket.on('teams', (val) => {
+            setTeams(val.teams);
         })
     }, []);
 
@@ -72,7 +116,8 @@ const Control = () => {
     return (
     <>
         <div>
-            Next Map: <select value={map} onChange={(e) => {
+            <h5>Next Map</h5>
+            <select value={map} onChange={(e) => {
                 setMap(e.target.value);
                 fetch('http://localhost:8080/nextmap', {
                     method: 'POST',
@@ -88,20 +133,7 @@ const Control = () => {
                     })
                 }
             </select>
-            mapState: <select value={mapState} onChange={(e) => {
-                setMapState(parseInt(e.target.value));
-                fetch('http://localhost:8080/scoreboard/mapState', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ mapState: e.target.value})
-                }).catch(err => console.log(err));
-            }}>
-                <option value={0} key={0}>Control/Push</option>
-                <option value={1} key={1}>Home Attack</option>
-                <option value={2} key={2}>Home Defence</option>
-            </select>
+            <h5>Caster Info</h5>
             <div className={styles.casterData}>
                 <div className={styles.block}>
                     Caster Name: <input type="text" value={casters[0]? (casters[0] as CasterObject).name : ""} onChange={(e) => {
@@ -146,6 +178,79 @@ const Control = () => {
                     }}/>
                 </div>
             </div>
+
+            <h5>Scoreboard</h5>
+
+            Current Map State: <select value={mapState} onChange={(e) => {
+                setMapState(parseInt(e.target.value));
+                fetch('http://localhost:8080/scoreboard/mapState', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mapState: e.target.value})
+                }).catch(err => console.log(err));
+            }}>
+                <option value={0} key={0}>Control/Push</option>
+                <option value={1} key={1}>Home Attack</option>
+                <option value={2} key={2}>Home Defence</option>
+            </select>
+
+            Team 1: <select value={match.home?.name} onChange={(e) => {
+                fetch('http://localhost:8080/scoreboard/team', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({side: "home", team: e.target.value})
+                })
+                .then((res: Response) => {
+                    res.json().then((val: MatchInfoObject) => {
+                        setMatch(val);
+                    })
+                }).catch(err => console.log(err));
+            }}>
+                {teams.map((val: string, index: number) => <option key={index} value={val}>{val}</option>)}
+            </select>
+
+            Score: {score[0]}
+            <button onClick={(e) => updateScore([score[0] + 1, score[1]])}>+</button>
+            <button onClick={(e) => updateScore([score[0] - 1, score[1]])}>-</button>
+
+            Team 2: <select value={match.away?.name} onChange={(e) => {
+                fetch('http://localhost:8080/scoreboard/team', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({side: "away", team: e.target.value})
+                })
+                .then((res: Response) => {
+                    res.json().then((val: MatchInfoObject) => {
+                        setMatch(val);
+                    })
+                }).catch(err => console.log(err));
+            }}>
+                {teams.map((val: string, index: number) => <option key={index} value={val}>{val}</option>)}
+            </select>
+
+            Score: {score[1]}
+            <button onClick={(e) => updateScore([score[0], score[1] + 1])}>+</button>
+            <button onClick={(e) => updateScore([score[0], score[1] - 1])}>-</button>
+
+            flip: <button onClick={(e) => {
+                fetch('http://localhost:8080/scoreboard/flip', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({flip: !flip})
+                }).then((res: Response) => {
+                    res.json().then((val) => {
+                        setFlip(val.flip);
+                    })
+                })
+            }}>{flip? "on": "off"}</button>
         </div>
         <div className={styles.col}>
             <div className={styles.sceneCont}>

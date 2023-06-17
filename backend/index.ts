@@ -19,6 +19,7 @@ enum mapState{
 }
 
 const app = express();
+app.use(express.json({limit: "2mb"}));
 const port = 8080;
 const repoPath = path.resolve(__dirname,"/repo");
 
@@ -28,6 +29,13 @@ const io = new Server(httpServer, {
         origin: "http://localhost:3000"
     }
 });
+
+let teamList: string[] = [];
+
+fs.promises.readdir(`${__dirname}/repo/team`).then((files) => {
+    for (let i of files)
+        teamList = [...teamList, i.split('.')[0]];
+})
 
 let state: stateObject = {
     nextMap: "busan",
@@ -44,15 +52,16 @@ let state: stateObject = {
         match: {
             home: {
                 name: "Home",
-                sr: 0,
+                rank: "Bronze",
             },
             away: {
                 name: "Away",
-                sr: 0
+                rank: "Grand Master",
             },
-            state: matchStates.NoResult
+
         },
         mapState: mapState.Home,
+        flip: false,
     },
 }
 
@@ -71,6 +80,24 @@ app.get('/casters', (req, res) => {
 
 app.get('/scoreboard', (req,res) => {
     res.json(state.scoreboard);
+})
+
+app.get('/teams/list', (req,res) => {
+    res.json(teamList);
+})
+
+app.post('/teams/add', (req,res) => {
+    if(req.body.name && req.body.logo)
+    {
+        const buf = Buffer.from(req.body.logo, "base64");
+        fs.promises.writeFile(`${__dirname}/repo/team/${req.body.name}.png`, buf)
+        .then(val => {
+            if(teamList.every((val: string) => val !== req.body.name))
+                teamList = [...teamList, req.body.name];
+            res.status(200).json({teamList: teamList});
+            io.emit('teams', {teams: teamList});
+        });
+    }
 })
 
 app.post('/nextmap', (req, res) => {
@@ -109,7 +136,7 @@ app.post('/scoreboard/match', (req, res) => {
         let match = req.body.match;
         if(matchInfoCheck(match as matchInfoObject)){
             state.scoreboard.match = match;
-            io.emit("scoreboard:match", match)
+            io.emit("scoreboard:match", {matchInfo:match})
             res.status(201).json(match);
         }
         else{
@@ -121,12 +148,42 @@ app.post('/scoreboard/match', (req, res) => {
     }
 });
 
+app.post('/scoreboard/flip', (req, res) => {
+    if(req.body && req.body.flip !== undefined){
+        state.scoreboard.flip = req.body.flip;
+        res.status(200).json({flip: state.scoreboard.flip});
+        io.send('scoreboard:flip', {flip: state.scoreboard.flip});
+    }
+    else{
+        res.status(400).send("bad request");
+    }
+})
+
+app.post('/scoreboard/team', (req,res) => {
+    if(req.body && req.body.team && req.body.side){
+        if(req.body.side === "home"){
+            state.scoreboard.match.home.name = req.body.team
+            res.status(200).json(state.scoreboard.match);
+            io.emit('scoreboard:match', {match: state.scoreboard.match}); 
+        }
+        else if(req.body.side === "away"){
+            state.scoreboard.match.away.name = req.body.team
+            res.status(200).json(state.scoreboard.match);
+            io.emit('scoreboard:match', {match: state.scoreboard.match}); 
+        }
+        else{
+            res.status(400).send("Invalid side");
+        }
+    }
+    res.status(400).send("invalid body");
+})
+
 app.post('/scoreboard/score', (req, res) => {
     if(req.body && req.body.score){
         let score = req.body.score;
         if(Array.isArray(score)){
             state.scoreboard.score = score;
-            io.emit("scoreboard:score", score);
+            io.emit("scoreboard:score", {score:score});
             res.status(201).json(state.scoreboard);
         }
         else{
@@ -144,7 +201,7 @@ app.post('/scoreboard/mapState', (req, res) => {
         state.scoreboard.mapState = mapState;
         if(mapState <= 2)
         {
-            io.emit("scoreboard:mapState", mapState);
+            io.emit("scoreboard:mapState", {mapState: mapState});
             res.status(201).json(state.scoreboard);
         }
         else{
@@ -192,16 +249,23 @@ type scoreboardObject = {
     score: scoreObject,
     match: matchInfoObject,
     mapState: mapState,
+    flip: boolean
+}
+
+type statsObject = {
+    points?: number,
+    winLossDraw?: number[],
+    mapDiff?: number,
 }
 
 type matchInfoObject = {
     home: teamObject,
     away: teamObject,
-    state: matchStates
+    stats?: statsObject[]
 }
 
 const matchInfoCheck: (obj: matchInfoObject) => boolean = (obj) => {
-    if(obj.home && obj.away && obj.state){
+    if(obj.home && obj.away){
         return teamObjectCheck(obj.home) && teamObjectCheck(obj.away);
     }
     return false;
@@ -209,11 +273,11 @@ const matchInfoCheck: (obj: matchInfoObject) => boolean = (obj) => {
 
 type teamObject = {
     name: string,
-    sr: number,
+    rank: "Bronze" | "Silver" | "Gold" | "Diamond" | "Platinum" | "Master" | "Grand Master" | "Top 500",
 }
 
 const teamObjectCheck: (obj: teamObject) => boolean = (obj) => {
-    return (obj.name !== undefined) && (obj.sr !== undefined)
+    return (obj.name !== undefined) && (obj.rank !== undefined)
 }
 
 type scoreObject = number[];

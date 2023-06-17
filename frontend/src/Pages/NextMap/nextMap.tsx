@@ -45,7 +45,7 @@ const NextMap = ({muted}: NextMapProps) => {
     useEffect(() => {
         fetch("http://localhost:8080/nextmap").then(res => {
             res.json().then(value => {
-                setMap(value.nextMap as string);
+                setMap(value.map as string);
             })
             .catch (err => {
                 console.log(err);
