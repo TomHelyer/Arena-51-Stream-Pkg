@@ -6,6 +6,8 @@ import NextMap from "../NextMap";
 import Scoreboard from "../Scoreboard";
 import { io } from "socket.io-client";
 
+const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
+
 const useStyles = createUseStyles({
     scene: {
         fontSize: `${500/1920}em`
@@ -46,7 +48,7 @@ const Control = () => {
 
     const updateScore: (score: number[]) => void = (score) => {
         setScore(score);
-        fetch('http://localhost:8080/scoreboard/score', {
+        fetch(`${apiUrl}/scoreboard/score`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -56,15 +58,16 @@ const Control = () => {
     }
 
     useEffect(() => {
-        fetch('http://localhost:8080/nextmap').then(res => {
+        fetch(`${apiUrl}/nextmap`).then(res => {
             res.json().then(val => setMap(val.map)).catch(err => console.log(err))
         }).catch(err => console.log(err));
 
-        fetch('http://localhost:8080/casters').then(res => {
+
+        fetch(`${apiUrl}/casters`).then(res => {
             res.json().then(val => setCasters(val)).catch(err => console.log(err))
         }).catch(err => console.log(err));
 
-        fetch('http://localhost:8080/scoreboard').then(res => {
+        fetch(`${apiUrl}/scoreboard`).then(res => {
             if(res.status === 200)
                 res.json().then(val => {
                     setScore(val.score);
@@ -74,14 +77,15 @@ const Control = () => {
                 })
         });
 
-        fetch('http://localhost:8080/teams/list').then(res => {
+
+        fetch(`${apiUrl}/teams/list`).then(res => {
             if(res.status === 200)
                 res.json().then(val => {
                     setTeams(val);
                 })
         })
-        
-        const socket = io('http://localhost:8080');
+
+        const socket = io(apiUrl);
 
         socket.on('scoreboard:mapState', (val) => {
             setMapState(val.mapState);
@@ -106,7 +110,7 @@ const Control = () => {
 
     useEffect(() => {
         if(casters[0] && casters[1]){
-            fetch('http://localhost:8080/casters', {
+            fetch(`${apiUrl}/casters`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -122,7 +126,7 @@ const Control = () => {
             <h5>Next Map</h5>
             <select value={map} onChange={(e) => {
                 setMap(e.target.value);
-                fetch('http://localhost:8080/nextmap', {
+                fetch(`${apiUrl}/nextmap`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -186,7 +190,7 @@ const Control = () => {
 
             Current Map State: <select value={mapState} onChange={(e) => {
                 setMapState(parseInt(e.target.value));
-                fetch('http://localhost:8080/scoreboard/mapState', {
+                fetch(`${apiUrl}/scoreboard/mapState`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -200,7 +204,7 @@ const Control = () => {
             </select>
 
             Team 1: <select value={match.home?.name} onChange={(e) => {
-                fetch('http://localhost:8080/scoreboard/team', {
+                fetch(`${apiUrl}/scoreboard/team`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -221,7 +225,7 @@ const Control = () => {
             <button onClick={(e) => updateScore([score[0] - 1, score[1]])}>-</button>
 
             Team 2: <select value={match.away?.name} onChange={(e) => {
-                fetch('http://localhost:8080/scoreboard/team', {
+                fetch(`${apiUrl}/scoreboard/team`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -242,7 +246,7 @@ const Control = () => {
             <button onClick={(e) => updateScore([score[0], score[1] - 1])}>-</button>
 
             flip: <button onClick={(e) => {
-                fetch('http://localhost:8080/scoreboard/flip', {
+                fetch(`${apiUrl}/scoreboard/flip`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -280,7 +284,7 @@ const Control = () => {
                         if(!reader.result)
                             return;
                         let base64 = reader.result as String;
-                        fetch('http://localhost:8080/teams/add', {
+                        fetch(`${apiUrl}/teams/add`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'

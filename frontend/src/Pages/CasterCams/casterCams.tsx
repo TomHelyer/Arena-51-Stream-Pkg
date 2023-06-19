@@ -4,6 +4,8 @@ import { io } from 'socket.io-client';
 import Scoreboard from '../Scoreboard';
 import { main, nameplate } from '../../Media/Scenes';
 
+const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
+
 const createStyles = createUseStyles({
     cont: {
         aspectRatio: "16/9",
@@ -54,11 +56,11 @@ const CasterCams = () => {
     const [casters, setCasters] = useState({} as CastersObject);
 
     useEffect(() => {
-        fetch('http://localhost:8080/casters').then(res => {
+        fetch(`${apiUrl}/casters`).then(res => {
             res.json().then(val => setCasters(val)).catch(err => console.log(err))
         }).catch(err => console.log(err));
 
-        const socket = io('http://localhost:8080');
+        const socket = io(apiUrl);
 
         socket.on('casters', (value: CastersObject) => {
             setCasters(value);

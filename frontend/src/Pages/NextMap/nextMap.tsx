@@ -4,6 +4,8 @@ import { io } from 'socket.io-client';
 import mapLookup from '../../Media/Maps';
 import { main } from '../../Media/Scenes';
 
+const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
+
 const createStyles = createUseStyles({
     cont: {
         aspectRatio: "16/9",
@@ -43,7 +45,7 @@ const NextMap = ({muted}: NextMapProps) => {
     const [casters, setCasters] =  useState({} as CastersObject);
 
     useEffect(() => {
-        fetch("http://localhost:8080/nextmap").then(res => {
+        fetch(`${apiUrl}/nextmap`).then(res => {
             res.json().then(value => {
                 setMap(value.map as string);
             })
@@ -54,7 +56,7 @@ const NextMap = ({muted}: NextMapProps) => {
             console.log(err);
         });
 
-        const socket = io('http://localhost:8080');
+        const socket = io(apiUrl);
 
         socket.on('nextmap', (map) => {
             setMap(map);
