@@ -7,11 +7,12 @@ import {leagueInfoObject, scoreInfoObject, teamInfoObject} from "./league/types"
 
 const app = express();
 const port = 8080;
+const corsUrl = process.env.FRONTEND_URL || "http://localhost:3000";
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: "http://localhost:3000"
+        origin: corsUrl
     }
 });
 
@@ -34,7 +35,7 @@ let leagueInfo: leagueInfoObject = {
 }
 
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: corsUrl
 }));
 
 app.use(express.json());
