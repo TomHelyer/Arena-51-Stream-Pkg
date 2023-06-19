@@ -16,6 +16,8 @@ import { io } from 'socket.io-client';
 
 const image = require('./Capture.PNG');
 
+const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
+
 const homeMapStates = [push, att, def];
 const awayMapStates = [push, def, att];
 // const colorMap: (rank: string) => string = (rank) => {
@@ -165,14 +167,14 @@ const Scoreboard = () => {
     const [flip, setFlip] = useState<boolean>(false);
 
     useEffect(() => {
-        fetch('http://localhost:8080/scoreboard').then(res => res.json().then((val: ScorebaordObject) => {
+        fetch(`${apiUrl}/scoreboard`).then(res => res.json().then((val: ScorebaordObject) => {
             setMatch(val.match);
             setScore(val.score);
             setMapState(val.mapState);
             setFlip(val.flip);
         }));
 
-        const socket = io('http://localhost:8080');
+        const socket = io(apiUrl);
 
         socket.on('scoreboard:score', (val) => {
             setScore(val.score);
@@ -194,14 +196,14 @@ const Scoreboard = () => {
 
     useEffect(() => {
         Promise.all([
-        fetch(`http://localhost:8080/image/team/${match.home.name.toLowerCase()}`).then(res => {
+        fetch(`${apiUrl}/image/team/${match.home.name.toLowerCase()}`).then(res => {
             if(res.status === 200)
                 return res.json().then(val => val.image);
 
             console.log("Error code: ", res.status);
             return 
         }),
-        fetch(`http://localhost:8080/image/team/${match.away.name.toLowerCase()}`).then(res => {
+        fetch(`${apiUrl}/image/team/${match.away.name.toLowerCase()}`).then(res => {
             if(res.status === 200)
                 return res.json().then(val => val.image);
 
