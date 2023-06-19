@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {createUseStyles} from 'react-jss';
 import { io } from 'socket.io-client';
+import Scoreboard from '../Scoreboard';
 import { main, nameplate } from '../../Media/Scenes';
 
 const createStyles = createUseStyles({
@@ -20,6 +21,7 @@ const createStyles = createUseStyles({
     background: {
         width: "100%",
         height: "100%",
+        top: 0,
         position: "absolute",
         objectFit: "fill"
     },
@@ -29,7 +31,7 @@ const createStyles = createUseStyles({
     nameCont:{
         display: "flex",
         position: "relative",
-        top: "73.5%",
+        top: "-26.5%",
         width: "100%",
     },
     name: {
@@ -53,7 +55,7 @@ const CasterCams = () => {
 
     useEffect(() => {
         fetch('http://localhost:8080/casters').then(res => {
-            res.json().then(val => setCasters(val.casters)).catch(err => console.log(err))
+            res.json().then(val => setCasters(val)).catch(err => console.log(err))
         }).catch(err => console.log(err));
 
         const socket = io('http://localhost:8080');
@@ -66,6 +68,7 @@ const CasterCams = () => {
     return (
         <div className={styles.cont}>
             <video className={styles.background} loop autoPlay src={main}/>
+            <Scoreboard />
             <embed className={`${styles.caster}`} src={casters[0]?.vdo ?? "https://vdo.ninja/?view=XRmNCts&password=H3ll3r_G%40m3r&label=Arena51Caster1"}/>
             <embed className={`${styles.caster2} ${styles.caster}`} src={casters[1]?.vdo ?? "https://vdo.ninja/?view=mSuqjbX&password=H3ll3r_G%40m3r&label=Arena51Caster2"}/>
             <video className={styles.background} src={nameplate}/>

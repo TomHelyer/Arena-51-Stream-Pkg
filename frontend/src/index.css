@@ -16,3 +16,13 @@ code {
   font-family: "technovier";
   src: url("fonts/Techovier Bold.ttf");
 }
+
+@font-face {
+  font-family: "Revamped";
+  src: url("fonts/Revamped.otf");
+}
+
+@font-face {
+  font-family: "Infinity";
+  src: url('fonts/MADEINFINITY\ PERSONALUSE-Medium.otf');
+}
