@@ -10,12 +10,50 @@ declare module '*.webm' {
     export default src;
 }
 
+enum mapState{
+    Con=0,
+    Home=1,
+    Away=2,
+}
+
+type ScorebaordObject = {
+    flip: boolean,
+    score: ScoreObject,
+    match: MatchInfoObject,
+    mapState: mapState,
+}
+
+type ScoreObject = number[];
+
 type CasterObject = {
     name: string,
     vdo?: string,
 }
 
-type CastersObject = {
-    0?: CasterObject,
-    1?: CasterObject,
+type CastersObject = CasterObject[]
+
+type MatchInfoObject = {
+    home: TeamObject,
+    away: TeamObject,
+    stats?: statsObject[]
+}
+
+type TeamObject = {
+    id?: number,
+    name: string,
+    rank: Rank,
+}
+
+type Rank = "Bronze" | "Silver" | "Gold" | "Diamond" | "Platinum" | "Master" | "Grand Master" | "Top 500";
+
+type StatsObject = {
+    points?: number,
+    winLossDraw?: number[],
+    mapDiff?: number,
+}
+
+type newTeam = {
+    name: string,
+    file?: File,
+    target?: any,
 }
