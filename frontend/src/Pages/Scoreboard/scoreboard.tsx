@@ -17,7 +17,6 @@ import { io } from 'socket.io-client';
 const image = require('./Capture.PNG');
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
-
 const homeMapStates = [push, att, def];
 const awayMapStates = [push, def, att];
 // const colorMap: (rank: string) => string = (rank) => {
@@ -168,6 +167,7 @@ const Scoreboard = () => {
 
     useEffect(() => {
         fetch(`${apiUrl}/scoreboard`).then(res => res.json().then((val: ScorebaordObject) => {
+
             setMatch(val.match);
             setScore(val.score);
             setMapState(val.mapState);
@@ -197,6 +197,7 @@ const Scoreboard = () => {
     useEffect(() => {
         Promise.all([
         fetch(`${apiUrl}/image/team/${match.home.name.toLowerCase()}`).then(res => {
+
             if(res.status === 200)
                 return res.json().then(val => val.image);
 
@@ -204,6 +205,7 @@ const Scoreboard = () => {
             return 
         }),
         fetch(`${apiUrl}/image/team/${match.away.name.toLowerCase()}`).then(res => {
+
             if(res.status === 200)
                 return res.json().then(val => val.image);
 

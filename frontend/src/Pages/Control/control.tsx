@@ -62,6 +62,7 @@ const Control = () => {
             res.json().then(val => setMap(val.map)).catch(err => console.log(err))
         }).catch(err => console.log(err));
 
+
         fetch(`${apiUrl}/casters`).then(res => {
             res.json().then(val => setCasters(val)).catch(err => console.log(err))
         }).catch(err => console.log(err));
@@ -76,13 +77,14 @@ const Control = () => {
                 })
         });
 
+
         fetch(`${apiUrl}/teams/list`).then(res => {
             if(res.status === 200)
                 res.json().then(val => {
                     setTeams(val);
                 })
         })
-        
+
         const socket = io(apiUrl);
 
         socket.on('scoreboard:mapState', (val) => {
