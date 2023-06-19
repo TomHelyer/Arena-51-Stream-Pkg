@@ -192,8 +192,6 @@ const Scoreboard = () => {
 
     }, []);
 
-    useEffect(() => {},[flip]);
-
     useEffect(() => {
         Promise.all([
         fetch(`http://localhost:8080/image/team/${match.home.name.toLowerCase()}`).then(res => {
@@ -217,11 +215,11 @@ const Scoreboard = () => {
 
     return (
         <div className={`${styles.frame} ${flip? styles.flip : ""}`}>
-            <div className={`${styles.team} ${flip? styles.flip : ""}`}>
-                <div className={`${styles.logo} `}>
+            <div className={`${styles.team}`}>
+                <div className={`${styles.logo} ${flip? styles.flip : ""}`}>
                     <img className={styles.img} src={`data:image/png;base64, ${images[0]}`} alt={match.home.name[0]}/>
                 </div>
-                <div className={`${styles.teamName}`}>
+                <div className={`${styles.teamName} ${flip? styles.flip : ""}`}>
                     <div className={styles.backgroundImg}>
                         <img className={styles.transImg} src={`data:image/png;base64, ${images[0]}`} alt={""}/>
                     </div>
@@ -237,11 +235,11 @@ const Scoreboard = () => {
                 </div>
             </div>
 
-            <div className={`${styles.team} ${flip? "" : styles.flip}`}>
-                <div className={`${styles.logo} ${styles.flip}`}>
+            <div className={`${styles.team} ${styles.flip}`}>
+                <div className={`${styles.logo} ${flip? "" : styles.flip}`}>
                     <img className={styles.img} src={`data:image/png;base64, ${images[1]}`} alt={match.away.name[0]}/>
                 </div>
-                <div className={`${styles.teamName} ${styles.flip}`}>
+                <div className={`${styles.teamName} ${flip? "" : styles.flip}`}>
                     <div className={styles.backgroundImg}>
                         <img className={styles.transImg} src={`data:image/png;base64, ${images[1]}`} alt={""}/>
                     </div>
@@ -256,7 +254,9 @@ const Scoreboard = () => {
                     <img className={styles.img} src={awayMapStates[mapState]} alt=""/>
                 </div>
             </div>
+            {flip}
         </div>
+        
     )
 }
 

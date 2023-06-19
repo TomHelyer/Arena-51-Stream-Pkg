@@ -87,7 +87,7 @@ app.get('/teams/list', (req,res) => {
 })
 
 app.post('/teams/add', (req,res) => {
-    if(req.body.name && req.body.logo)
+    if(req.body && req.body.name && req.body.logo)
     {
         const buf = Buffer.from(req.body.logo, "base64");
         fs.promises.writeFile(`${__dirname}/repo/team/${req.body.name}.png`, buf)
@@ -96,7 +96,14 @@ app.post('/teams/add', (req,res) => {
                 teamList = [...teamList, req.body.name];
             res.status(200).json({teamList: teamList});
             io.emit('teams', {teams: teamList});
+            if(state.scoreboard.match.home.name === req.body.name || state.scoreboard.match.away.name === req.body.name)
+            {
+                io.emit('scoreboard:match', {match: state.scoreboard.match}); 
+            };
         });
+    }
+    else{
+        res.status(400).send("bad team object");
     }
 })
 
@@ -107,6 +114,9 @@ app.post('/nextmap', (req, res) => {
         io.emit('nextmap', state.nextMap);
 
         res.status(201).json({map: state.nextMap});
+    }
+    else{
+        res.status(400).send("bad Map object");
     }
 })
 
@@ -136,7 +146,7 @@ app.post('/scoreboard/match', (req, res) => {
         let match = req.body.match;
         if(matchInfoCheck(match as matchInfoObject)){
             state.scoreboard.match = match;
-            io.emit("scoreboard:match", {matchInfo:match})
+            io.emit("scoreboard:match", {match: match})
             res.status(201).json(match);
         }
         else{
@@ -152,7 +162,7 @@ app.post('/scoreboard/flip', (req, res) => {
     if(req.body && req.body.flip !== undefined){
         state.scoreboard.flip = req.body.flip;
         res.status(200).json({flip: state.scoreboard.flip});
-        io.send('scoreboard:flip', {flip: state.scoreboard.flip});
+        io.emit('scoreboard:flip', {flip: state.scoreboard.flip});
     }
     else{
         res.status(400).send("bad request");
@@ -175,7 +185,9 @@ app.post('/scoreboard/team', (req,res) => {
             res.status(400).send("Invalid side");
         }
     }
-    res.status(400).send("invalid body");
+    else{
+        res.status(400).send("invalid body");
+    }
 })
 
 app.post('/scoreboard/score', (req, res) => {

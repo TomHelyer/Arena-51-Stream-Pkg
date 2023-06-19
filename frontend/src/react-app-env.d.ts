@@ -51,3 +51,9 @@ type StatsObject = {
     winLossDraw?: number[],
     mapDiff?: number,
 }
+
+type newTeam = {
+    name: string,
+    file?: File,
+    target?: any,
+}

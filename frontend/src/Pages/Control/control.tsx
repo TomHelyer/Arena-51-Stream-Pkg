@@ -39,6 +39,9 @@ const Control = () => {
     const [mapState, setMapState] = useState<mapState>(0);
     const [flip, setFlip] = useState<boolean>(false);
     const [teams, setTeams] = useState<string[]>([]);
+    const [uploadTeam, setUploadTeam] = useState<newTeam>({
+        name: "",
+    });
     const styles = useStyles();
 
     const updateScore: (score: number[]) => void = (score) => {
@@ -251,6 +254,45 @@ const Control = () => {
                     })
                 })
             }}>{flip? "on": "off"}</button>
+
+            <h5>Add Team</h5>
+            Name: <input type="text" value={uploadTeam.name} onChange={(e) => {
+                setUploadTeam({
+                    ...uploadTeam,
+                    name: e.target.value
+                });
+            }}/>
+
+            File: <input type="file" value={uploadTeam.target??""} onChange={(e) => {
+                setUploadTeam({
+                    ...uploadTeam,
+                    file: (e.target.files?.[0]??undefined),
+                    target: e.target.value
+                });
+            }}/>{uploadTeam.file? 
+                <img alt="" src={URL.createObjectURL(uploadTeam.file)}/>
+                : ""}
+            <button onClick={(e) => {
+                if(uploadTeam.name !== "" && uploadTeam.file)
+                {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        if(!reader.result)
+                            return;
+                        let base64 = reader.result as String;
+                        fetch('http://localhost:8080/teams/add', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({name: uploadTeam.name, logo: base64.split(',')[1]})
+                        }).then((res: Response) => {
+                            setUploadTeam({name:""});
+                        });
+                    }
+                    reader.readAsDataURL(uploadTeam.file);
+                }
+            }}>submit</button>
         </div>
         <div className={styles.col}>
             <div className={styles.sceneCont}>
