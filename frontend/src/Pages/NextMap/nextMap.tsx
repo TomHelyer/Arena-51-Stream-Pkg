@@ -56,6 +56,10 @@ const NextMap = ({muted}: NextMapProps) => {
             console.log(err);
         });
 
+        fetch(`${apiUrl}/casters`).then(res => {
+            res.json().then(val => setCasters(val)).catch(err => console.log(err))
+        }).catch(err => console.log(err));
+
         const socket = io(apiUrl);
 
         socket.on('nextmap', (map) => {

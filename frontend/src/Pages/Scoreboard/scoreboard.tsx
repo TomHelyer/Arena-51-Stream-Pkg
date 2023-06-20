@@ -1,39 +1,16 @@
 import { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
-import push from './arrow-right-fill.svg';
-import def from './shield-fill.svg';
-import att from './sword-fill.svg';
+import push from '../../Media/Images/arrow-right-fill.svg';
+import def from '../../Media/Images/shield-fill.svg';
+import att from '../../Media/Images/sword-fill.svg';
 import { io } from 'socket.io-client';
 
-// const T500 = require('../../Media/Images/1.Grandmaster/Grandmaster 1.png');
-// const GM = require('../../Media/Images/1.Grandmaster/Grandmaster 1 No Shine.png');
-// const Master = require('../../Media/Images/2.Masters/Masters 1 No Shine.png');
-// const Diamond = require('../../Media/Images/3.Diamond/Diamond 1.png');
-// const Plat = require("../../Media/Images/4.Platinum/Platinum 1.png");
-// const Gold = require("../../Media/Images/5.Gold/Gold 1.png");
-// const Silver = require("../../Media/Images/6.Silver/Silver 1.png");
-// const Bronze = require("../../Media/Images/7.Bronze/Bronze 1.png"); 
-
-const image = require('./Capture.PNG');
+const image = require('../../Media/Images/Capture.PNG');
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
+
 const homeMapStates = [push, att, def];
 const awayMapStates = [push, def, att];
-// const colorMap: (rank: string) => string = (rank) => {
-//     return (
-//         rank === "Top 500"? T500 :
-//         rank === "Grand Master"? GM :
-//         rank === "Master"? Master :
-//         rank === "Diamond"? Diamond :
-//         rank === "Platinum"? Plat :
-//         rank === "Gold"? Gold :
-//         rank === "Silver"? Silver :
-//         rank === "Bronze"? Bronze :
-//         ""
-//     )
-// }
-//d63750
-//2fbbde
 
 const createStyles = createUseStyles({
     frame: {
@@ -47,7 +24,7 @@ const createStyles = createUseStyles({
         textAlign: "center",
         justifyContent: "space-between",
         aspectRatio: `${1920/1080}`,
-        //backgroundImage: `url(${image})`, //uncomment this line for testing purposes
+        backgroundImage: `url(${image})`, //uncomment this line for testing purposes
         backgroundSize: "100%",
         boxSizing: "border-box",
         paddingTop: "0.8%",
