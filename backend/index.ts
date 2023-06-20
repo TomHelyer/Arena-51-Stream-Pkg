@@ -6,6 +6,7 @@ import { genTable, generateMatches, matchMapResult } from "./league/functions";
 import {leagueInfoObject, scoreInfoObject, teamInfoObject} from "./league/types";
 import fs from "fs";
 import path from "path";
+import 'dotenv/config';
 
 enum mapState{
     Con=0,
@@ -14,7 +15,7 @@ enum mapState{
 }
 
 const app = express();
-app.use(express.json({limit: "2mb"}));
+app.use(express.json({limit: "3mb"}));
 
 const port = 8081;
 const corsUrl = process.env.FRONTEND_URL || "http://localhost:3000";
