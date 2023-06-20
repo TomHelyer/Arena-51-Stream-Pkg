@@ -22,13 +22,16 @@ enum mapState{
 
 const app = express();
 app.use(express.json({limit: "2mb"}));
+
 const port = 8081;
+const corsUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+
 const repoPath = path.resolve(__dirname,"/repo");
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: "http://localhost:3000"
+        origin: corsUrl
     }
 });
 
@@ -73,8 +76,14 @@ let leagueInfo: leagueInfoObject = {
     table: []
 }
 
+let leagueInfo: leagueInfoObject = {
+    teams: [],
+    matches: [],
+    table: []
+}
+
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: corsUrl
 }));
 
 app.use(express.json());
@@ -148,6 +157,15 @@ app.post('/casters', (req, res) => {
     }
     else
         res.status(400).send("No caster element in request body");
+});
+
+app.post('/league/addTeam', (req, res) => {
+    if(leagueInfo.matches.length > 0){
+        res.status(405).json({
+            message: "can't add teams after match generation",
+            matches: leagueInfo.matches,
+        });
+    }
 });
 
 app.post('/league/addTeam', (req, res) => {
@@ -306,7 +324,6 @@ app.get('/image/:bucket/:image', (req,res) => {
 
 httpServer.listen(port, () => {
     console.log(`server started at http://localhost:${port}`);
-
 });
 
 type CasterObject = {
