@@ -166,15 +166,6 @@ app.post('/league/addTeam', (req, res) => {
             matches: leagueInfo.matches,
         });
     }
-});
-
-app.post('/league/addTeam', (req, res) => {
-    if(leagueInfo.matches.length > 0){
-        res.status(405).json({
-            message: "can't add teams after match generation",
-            matches: leagueInfo.matches,
-        });
-    }
     else if(req.body.team)
     {
         const team: teamInfoObject = req.body.team;
