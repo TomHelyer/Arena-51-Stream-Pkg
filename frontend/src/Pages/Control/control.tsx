@@ -300,19 +300,19 @@ const Control = () => {
         </div>
         <div className={styles.col}>
             <div className={styles.sceneCont}>
-                <h3>Next Map</h3>
+                <h3>/NextMap</h3>
                 <div className={styles.scene}>
                     <NextMap muted={true}/>
                 </div>
             </div>
             <div className={styles.sceneCont}>
-                <h3>Caster Cams</h3>
+                <h3>/CasterCams</h3>
                 <div className={styles.scene}>
                     <CasterCams />
                 </div>
             </div>
             <div className={styles.sceneCont}>
-                <h3>ScoreBoard</h3>
+                <h3>/ScoreBoard</h3>
                 <div className={styles.scene}>
                     <Scoreboard />
                 </div>
