@@ -2,8 +2,10 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import NextMap from "./Pages/NextMap";
 import Control from "./Pages/Control";
 import './App.css';
+import 'remixicon/fonts/remixicon.css';
 import { createUseStyles } from "react-jss";
 import CasterCams from "./Pages/CasterCams";
+import Scoreboard from "./Pages/Scoreboard";
 
 const createStyles = createUseStyles({
   nextmap: {
@@ -28,6 +30,11 @@ const App = () => {
           <Route path="castercams" element={
             <div className={styles.nextmap}>
               <CasterCams/>
+            </div>
+          } />
+          <Route path="scoreboard" element={
+            <div className={styles.nextmap} >
+              <Scoreboard />
             </div>
           } />
         </Route>
