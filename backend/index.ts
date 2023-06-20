@@ -7,13 +7,6 @@ import {leagueInfoObject, scoreInfoObject, teamInfoObject} from "./league/types"
 import fs from "fs";
 import path from "path";
 
-enum matchStates{
-    Home = 1,
-    Away = -1,
-    Draw = 0,
-    NoResult = ""
-}
-
 enum mapState{
     Con=0,
     Home=1,
@@ -68,12 +61,6 @@ let state: stateObject = {
         mapState: mapState.Home,
         flip: false,
     },
-}
-
-let leagueInfo: leagueInfoObject = {
-    teams: [],
-    matches: [],
-    table: []
 }
 
 let leagueInfo: leagueInfoObject = {
