@@ -295,7 +295,7 @@ app.post('/scoreboard/mapState', (req, res) => {
 });
 
 app.get('/image/:bucket/:image', (req,res) => {
-    fs.promises.readFile(`${__dirname}/repo/${req.params.bucket}/${req.params.image}.png`, {encoding: 'base64'})
+    fs.promises.readFile(`./repo/${req.params.bucket}/${req.params.image}.png`, {encoding: 'base64'})
     .then(val => {
         res.status(200).json({image: val});
     }).catch(err => res.status(401).send(err));
