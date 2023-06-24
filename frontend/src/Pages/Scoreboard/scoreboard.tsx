@@ -173,7 +173,7 @@ const Scoreboard = () => {
 
     useEffect(() => {
         Promise.all([
-        fetch(`${apiUrl}/image/team/${match.home.name.toLowerCase()}`).then(res => {
+        fetch(`${apiUrl}/image/team/${match.home.name}`).then(res => {
 
             if(res.status === 200)
                 return res.json().then(val => val.image);
@@ -181,7 +181,7 @@ const Scoreboard = () => {
             console.log("Error code: ", res.status);
             return 
         }),
-        fetch(`${apiUrl}/image/team/${match.away.name.toLowerCase()}`).then(res => {
+        fetch(`${apiUrl}/image/team/${match.away.name}`).then(res => {
 
             if(res.status === 200)
                 return res.json().then(val => val.image);
