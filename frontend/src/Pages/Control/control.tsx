@@ -5,6 +5,7 @@ import CasterCams from "../CasterCams";
 import NextMap from "../NextMap";
 import Scoreboard from "../Scoreboard";
 import { io } from "socket.io-client";
+import LeagueTable from "../LeagueTable";
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
 
@@ -315,6 +316,12 @@ const Control = () => {
                 <h3>/ScoreBoard</h3>
                 <div className={styles.scene}>
                     <Scoreboard displayDemo={true} />
+                </div>
+            </div>
+            <div className={styles.sceneCont}>
+                <h3>/LeagueTable</h3>
+                <div className={styles.scene}>
+                    <LeagueTable />
                 </div>
             </div>
         </div>

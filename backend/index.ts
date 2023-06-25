@@ -154,7 +154,7 @@ app.post('/league/addTeam', (req, res) => {
             matches: leagueInfo.matches,
         });
     }
-    else if(req.body.team)
+    else if(req.body && req.body.team && teamList.find((s: string) => s === req.body.team))
     {
         const team: teamInfoObject = req.body.team;
         if(team.name && team.sr){
@@ -167,7 +167,7 @@ app.post('/league/addTeam', (req, res) => {
     }
 });
 
-app.post('/league/demo', (req, res) => {
+app.get('/league/demo', (req, res) => {
     let demo: leagueInfoObject = {
         teams: [],
         matches: [],
@@ -175,7 +175,7 @@ app.post('/league/demo', (req, res) => {
     }
     for(let x = 0; x < 8; x++){
         demo.teams = [...demo.teams, {
-            name: `Team ${x}`,
+            name: teamList[x],
             sr: Math.floor(Math.random() * 10) * 100 + 3500
         }]
     }

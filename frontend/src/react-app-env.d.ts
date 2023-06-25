@@ -10,6 +10,18 @@ declare module '*.webm' {
     export default src;
 }
 
+enum result{
+    Home = 1,
+    Draw = 0,
+    Away = -1,
+}
+
+enum matchStopType{
+    BestOf,
+    FirstTo,
+    NumMaps,
+}
+
 enum mapState{
     Con=0,
     Home=1,
