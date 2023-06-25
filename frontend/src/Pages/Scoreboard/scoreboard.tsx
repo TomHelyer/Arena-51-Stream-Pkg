@@ -13,6 +13,9 @@ const homeMapStates = [push, att, def];
 const awayMapStates = [push, def, att];
 
 const createStyles = createUseStyles({
+    demoImg: {
+        backgroundImage: `url(${image})`,
+    },
     frame: {
         fontFamily: "Infinity",
         position: "relative",
@@ -24,7 +27,6 @@ const createStyles = createUseStyles({
         textAlign: "center",
         justifyContent: "space-between",
         aspectRatio: `${1920/1080}`,
-        backgroundImage: `url(${image})`, //uncomment this line for testing purposes
         backgroundSize: "100%",
         boxSizing: "border-box",
         paddingTop: "0.8%",
@@ -125,7 +127,7 @@ const createStyles = createUseStyles({
     }
 });
 
-const Scoreboard = () => {
+const Scoreboard = ({displayDemo = false}: {displayDemo?: boolean}) => {
     const styles = createStyles();
     const [images, setImages] = useState(["",""]);
     const [match, setMatch] = useState<MatchInfoObject>({
@@ -195,7 +197,7 @@ const Scoreboard = () => {
     }, [match]);
 
     return (
-        <div className={`${styles.frame} ${flip? styles.flip : ""}`}>
+        <div className={`${styles.frame} ${flip? styles.flip : ""} ${displayDemo? styles.demoImg : ""}`}>
             <div className={`${styles.team}`}>
                 <div className={`${styles.logo} ${flip? styles.flip : ""}`}>
                     <img className={styles.img} src={`data:image/png;base64, ${images[0]}`} alt={match.home.name[0]}/>

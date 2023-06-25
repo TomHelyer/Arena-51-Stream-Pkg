@@ -314,7 +314,7 @@ const Control = () => {
             <div className={styles.sceneCont}>
                 <h3>/ScoreBoard</h3>
                 <div className={styles.scene}>
-                    <Scoreboard />
+                    <Scoreboard displayDemo={true} />
                 </div>
             </div>
         </div>
