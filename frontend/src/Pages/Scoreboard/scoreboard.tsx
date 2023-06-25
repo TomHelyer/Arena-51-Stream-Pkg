@@ -67,8 +67,8 @@ const createStyles = createUseStyles({
         height: "90%",
     },
     transImg: {
-        opacity: "0.3",
-        width: "90%",
+        opacity: "0.2",
+        width: "70%",
         filter: "blur(2px)",
     },
     backgroundImg: {
@@ -82,6 +82,7 @@ const createStyles = createUseStyles({
     },
     teamName: {
         minWidth: 0,
+        flexGrow: 1,
     },
     textOnTop: {
         position: "relative",
