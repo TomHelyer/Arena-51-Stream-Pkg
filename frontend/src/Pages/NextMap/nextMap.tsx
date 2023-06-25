@@ -75,7 +75,9 @@ const NextMap = ({muted}: NextMapProps) => {
     return (
         <div className={styles.cont}>
             <video className={styles.background} loop autoPlay src={main}/>
-            <video className={styles.map} loop autoPlay muted={muted} src={mapLookup[map as keyof object]}/>
+            <video className={styles.map} loop autoPlay muted={muted} onLoadStart={(e) => {
+                e.currentTarget.volume = 0.2;
+            }} src={mapLookup[map as keyof object]}/>
             <embed className={`${styles.caster1} ${styles.caster}`} src={casters[0]?.vdo? casters[0].vdo : "https://vdo.ninja/?view=XRmNCts&password=H3ll3r_G%40m3r&label=Arena51Caster1"}/>
             <embed className={`${styles.caster2} ${styles.caster}`} src={casters[1]?.vdo? casters[1].vdo : "https://vdo.ninja/?view=mSuqjbX&password=H3ll3r_G%40m3r&label=Arena51Caster2"}/>
         </div>
