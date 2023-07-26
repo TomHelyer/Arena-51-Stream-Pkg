@@ -5,6 +5,7 @@ import CasterCams from "../CasterCams";
 import NextMap from "../NextMap";
 import Scoreboard from "../Scoreboard";
 import { io } from "socket.io-client";
+import HeroBans from "../HeroBans";
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
 
@@ -36,7 +37,7 @@ const useStyles = createUseStyles({
 const Control = () => {
     const [map, setMap] = useState("");
     const [casters, setCasters]= useState<CastersObject>([]);
-    const [score, setScore] = useState<number[]>([0,0]);
+    const [score, setScore] = useState<number[]>([0,0,0]);
     const [match, setMatch] = useState<MatchInfoObject>({} as MatchInfoObject);
     const [mapState, setMapState] = useState<mapState>(0);
     const [flip, setFlip] = useState<boolean>(false);
@@ -221,8 +222,8 @@ const Control = () => {
             </select>
 
             Score: {score[0]}
-            <button onClick={(e) => updateScore([score[0] + 1, score[1]])}>+</button>
-            <button onClick={(e) => updateScore([score[0] - 1, score[1]])}>-</button>
+            <button onClick={(e) => updateScore([score[0] + 1, score[1],score[2]])}>+</button>
+            <button onClick={(e) => updateScore([score[0] - 1, score[1],score[2]])}>-</button>
 
             Team 2: <select value={match.away?.name} onChange={(e) => {
                 fetch(`${apiUrl}/scoreboard/team`, {
@@ -242,8 +243,12 @@ const Control = () => {
             </select>
 
             Score: {score[1]}
-            <button onClick={(e) => updateScore([score[0], score[1] + 1])}>+</button>
-            <button onClick={(e) => updateScore([score[0], score[1] - 1])}>-</button>
+            <button onClick={(e) => updateScore([score[0], score[1] + 1,score[2]])}>+</button>
+            <button onClick={(e) => updateScore([score[0], score[1] - 1,score[2]])}>-</button>
+            
+            draws: {score[2]}
+            <button onClick={(e) => updateScore([score[0], score[1],score[2]+ 1])}>+</button>
+            <button onClick={(e) => updateScore([score[0], score[1],score[2]- 1])}>-</button>
 
             flip: <button onClick={(e) => {
                 fetch(`${apiUrl}/scoreboard/flip`, {
@@ -315,6 +320,12 @@ const Control = () => {
                 <h3>/ScoreBoard</h3>
                 <div className={styles.scene}>
                     <Scoreboard displayDemo={true} />
+                </div>
+            </div>
+            <div className={styles.sceneCont}>
+                <h3>/HeroBans</h3>
+                <div className={styles.scene}>
+                    <HeroBans />
                 </div>
             </div>
         </div>

@@ -141,7 +141,7 @@ const Scoreboard = ({displayDemo = false}: {displayDemo?: boolean}) => {
             rank: "Bronze",
         }
     });
-    const [score, setScore] = useState([0,0]);
+    const [score, setScore] = useState([0,0,0]);
     const [mapState, setMapState] = useState<mapState>(0);
     const [flip, setFlip] = useState<boolean>(false);
 

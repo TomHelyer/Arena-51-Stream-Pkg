@@ -47,7 +47,7 @@ let state: stateObject = {
         }
     ],
     scoreboard: {
-        score:[0,0],
+        score:[0,0,0],
         match: {
             home: {
                 name: "Home",
@@ -62,6 +62,10 @@ let state: stateObject = {
         mapState: mapState.Home,
         flip: false,
     },
+    heroBans: {
+        home: ["Ana", "Zarya"],
+        away: ["Sigma", "Brigitte"]
+    }
 }
 
 let leagueInfo: leagueInfoObject = {
@@ -90,6 +94,10 @@ app.get('/scoreboard', (req,res) => {
 
 app.get('/teams/list', (req,res) => {
     res.json(teamList);
+})
+
+app.get('/herobans',(req,res) => {
+    res.json(state.heroBans);
 })
 
 app.post('/teams/add', (req,res) => {
@@ -265,6 +273,28 @@ app.post('/scoreboard/score', (req, res) => {
         if(Array.isArray(score)){
             state.scoreboard.score = score;
             io.emit("scoreboard:score", {score:score});
+            let mapNo = score[0] + score[1] + score[2];
+            while (mapNo >= state.heroBans.home.length){
+                state.heroBans.home = [...state.heroBans.home,""]
+            }
+            while (mapNo >= state.heroBans.away.length){
+                state.heroBans.away = [...state.heroBans.away,""]
+            }
+            if (mapNo + 1 < state.heroBans.home.length){
+                let newHeroBans: string[] = []
+                for (let x = 0; x <= mapNo; x++){
+                    newHeroBans = [...newHeroBans,state.heroBans.home[x]]
+                }
+                state.heroBans.home = newHeroBans
+            }
+            if (mapNo + 1 < state.heroBans.away.length){
+                let newHeroBans: string[] = []
+                for (let x = 0; x <= mapNo; x++){
+                    newHeroBans = [...newHeroBans,state.heroBans.away[x]]
+                }
+                state.heroBans.away = newHeroBans
+            }
+            io.emit('heroBans', {heroBans:state.heroBans});
             res.status(201).json(state.scoreboard);
         }
         else{
@@ -323,7 +353,13 @@ const castersCheck: (obj: CastersObject) => boolean = (obj) => {
 type stateObject = {
     casters: CastersObject,
     nextMap: string,
-    scoreboard: scoreboardObject
+    scoreboard: scoreboardObject,
+    heroBans: HeroBansObject
+}
+
+type HeroBansObject = {
+    home: string[],
+    away: string[]
 }
 
 type scoreboardObject = {
