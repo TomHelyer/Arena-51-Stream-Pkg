@@ -131,14 +131,14 @@ const Control = () => {
 
   const [heroBansEnabled, setHeroBansEnabled] = useState(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeHeroBansEnabled = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHeroBansEnabled(event.target.checked);
   };
 
   return (
     <>
       <div>
-        Show Hero Bans <input type="checkbox" name="heroBansEnabled" onChange={handleChange}/>
+        Show Hero Bans <input type="checkbox" name="heroBansEnabled" onChange={handleChangeHeroBansEnabled}/>
         
         <h5>Next Map</h5>
         <select
@@ -375,8 +375,18 @@ const Control = () => {
             <div className={styles.casterData}>
               <div className={styles.block}>
                 {match.home?.name}
+                <select value={map}></select>
+                <select value={map}></select>
+                <select value={map}></select>
+                <select value={map}></select>
+                <select value={map}></select>
                 <br></br>
                 {match.away?.name}
+                <select value={map}></select>
+                <select value={map}></select>
+                <select value={map}></select>
+                <select value={map}></select>
+                <select value={map}></select>
               </div>
             </div>
           </>
