@@ -14,13 +14,6 @@ enum mapState{
     Away=2,
 }
 
-enum heroSelect{
-    Ana,
-    Brigitte,
-    Cassidy,
-    Zarya,
-}
-
 const app = express();
 app.use(express.json({limit: "3mb"}));
 

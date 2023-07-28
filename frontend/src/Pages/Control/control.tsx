@@ -367,6 +367,11 @@ const Control = () => {
         >
           {flip ? "on" : "off"}
         </button>
+        <button
+          onClick={(e) => updateScore([score[0] = 0, score[1] = 0, score[2] = 0])}
+        >
+          reset score
+        </button>
         {heroBansEnabled ? (
           <>
             <p>
