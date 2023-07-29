@@ -6,6 +6,7 @@ import NextMap from "../NextMap";
 import Scoreboard from "../Scoreboard";
 import { io } from "socket.io-client";
 import HeroBans from "../HeroBans";
+import heroLookup from "../../Media/Heroes";
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
 
@@ -42,6 +43,8 @@ const Control = () => {
   const [mapState, setMapState] = useState<mapState>(0);
   const [flip, setFlip] = useState<boolean>(false);
   const [teams, setTeams] = useState<string[]>([]);
+  const [hero, setHero] = useState<string[]>([]);
+  const [heroBansEnabled, setHeroBansEnabled] = useState(false);
   const [uploadTeam, setUploadTeam] = useState<newTeam>({
     name: "",
   });
@@ -128,8 +131,6 @@ const Control = () => {
       }).catch((err) => console.log(err));
     }
   }, [casters]);
-
-  const [heroBansEnabled, setHeroBansEnabled] = useState(false);
 
   const handleChangeHeroBansEnabled = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHeroBansEnabled(event.target.checked);
@@ -380,11 +381,6 @@ const Control = () => {
             <div className={styles.casterData}>
               <div className={styles.block}>
                 {match.home?.name}
-                <select value={map}></select>
-                <select value={map}></select>
-                <select value={map}></select>
-                <select value={map}></select>
-                <select value={map}></select>
                 <br></br>
                 {match.away?.name}
                 <select value={map}></select>

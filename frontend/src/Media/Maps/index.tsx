@@ -1,5 +1,5 @@
 import busan from './Welcome to Busan.mp4';
-import eich from './Welcome to Eichenwalde.mp4';
+import eich2 from './Welcome to Eichenwalde.mp4';
 import gib from './Welcome to Gibraltar.mp4';
 import havana from './Welcome to Havana.mp4';
 import hollywood from './Welcome to Hollywood.mp4';
@@ -14,7 +14,7 @@ import route from './Welcome to Route 66.mp4';
 
 const mapLookup: object = {
     busan,
-    eich,
+    eich2,
     gib,
     havana,
     hollywood,
