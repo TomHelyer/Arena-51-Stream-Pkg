@@ -3,10 +3,11 @@ import heroLookup from ".";
 
 interface DropdownProps {
     options: object;
+    defaultValue?: string;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ options }) => {
-    const [selectedOption, setSelectedOption] = useState('');
+const Dropdown: React.FC<DropdownProps> = ({ options, defaultValue = 'unknown' }) => {
+    const [selectedOption, setSelectedOption] = useState(defaultValue);
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);
@@ -14,7 +15,7 @@ const Dropdown: React.FC<DropdownProps> = ({ options }) => {
 
     return (
         <select value={selectedOption} onChange={handleChange}>
-        <option value="">Select an option</option>
+        <option value=""></option>
         {Object.entries(options).map(([key, value]) => (
             <option key={key} value={key}>
                 {value}
