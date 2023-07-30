@@ -7,6 +7,7 @@ import Scoreboard from "../Scoreboard";
 import { io } from "socket.io-client";
 import HeroBans from "../HeroBans";
 import heroLookup from "../../Media/Heroes";
+import HeroBanDropdown from "../../Media/Heroes/dropdown";
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
 
@@ -135,6 +136,8 @@ const Control = () => {
   const handleChangeHeroBansEnabled = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHeroBansEnabled(event.target.checked);
   };
+
+
 
   return (
     <>
@@ -381,13 +384,10 @@ const Control = () => {
             <div className={styles.casterData}>
               <div className={styles.block}>
                 {match.home?.name}
+                <HeroBanDropdown />
                 <br></br>
                 {match.away?.name}
-                <select value={map}></select>
-                <select value={map}></select>
-                <select value={map}></select>
-                <select value={map}></select>
-                <select value={map}></select>
+                <HeroBanDropdown />
               </div>
             </div>
           </>
