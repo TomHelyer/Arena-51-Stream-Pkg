@@ -14,7 +14,19 @@ const Dropdown: React.FC<DropdownProps> = ({ options, defaultValue = 'unknown' }
     };
 
     return (
-        <select value={selectedOption} onChange={handleChange}>
+        <select 
+            value={selectedOption}
+            onChange={(e) => {
+                handleChange;
+                setMap(e.target.value);
+                fetch(`${apiUrl}/nextmap`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ map: e.target.value }),
+                }).catch((err) => console.log(err));
+              }}>
         <option value=""></option>
         {Object.entries(options).map(([key, value]) => (
             <option key={key} value={key}>

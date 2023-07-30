@@ -30,6 +30,11 @@ const useStyles = createUseStyles({
     alignContent: "flex-start",
     justifyContent: "flex-start",
   },
+  hereBanData: {
+    display: "flex",
+    alignContent: "flex-start",
+    justifyContent: "flex-start",
+  },
   block: {
     flexGrow: "1",
   },
@@ -379,7 +384,7 @@ const Control = () => {
             <p>
               <h5> Hero Bans </h5>
             </p>
-            <div className={styles.casterData}>
+            <div className={styles.hereBanData}>
               <div className={styles.block}>
                 {match.home?.name}
                 <HeroBanDropdown />
