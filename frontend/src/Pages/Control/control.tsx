@@ -6,7 +6,6 @@ import NextMap from "../NextMap";
 import Scoreboard from "../Scoreboard";
 import { io } from "socket.io-client";
 import HeroBans from "../HeroBans";
-import heroLookup from "../../Media/Heroes";
 import HeroBanDropdown from "../../Media/Heroes/dropdown";
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
@@ -44,7 +43,6 @@ const Control = () => {
   const [mapState, setMapState] = useState<mapState>(0);
   const [flip, setFlip] = useState<boolean>(false);
   const [teams, setTeams] = useState<string[]>([]);
-  const [hero, setHero] = useState<string[]>([]);
   const [heroBansEnabled, setHeroBansEnabled] = useState(false);
   const [uploadTeam, setUploadTeam] = useState<newTeam>({
     name: "",
