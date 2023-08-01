@@ -34,6 +34,7 @@ const useStyles = createUseStyles({
     display: "flex",
     alignContent: "flex-start",
     justifyContent: "flex-start",
+    margin: "10px",
   },
   block: {
     flexGrow: "1",
@@ -140,13 +141,23 @@ const Control = () => {
     setHeroBansEnabled(event.target.checked);
   };
 
+  const [selectedHeroes, setSelectedHeroes] = useState<string[]>([]);
+  const handleDropdownChange = (newSelectedHeroes: string[]) => {
+    setSelectedHeroes(newSelectedHeroes);
+  };
 
 
   return (
     <>
       <div>
         Show Hero Bans <input type="checkbox" name="heroBansEnabled" onChange={handleChangeHeroBansEnabled}/>
-        
+        <br></br><br></br><br></br>
+
+        Selected heroes for ban: {selectedHeroes.join(", ")}
+        <br></br>
+        <br></br>
+        Banned hero nummero 3: {selectedHeroes[2]}
+
         <h5>Next Map</h5>
         <select
           value={map}
@@ -387,10 +398,10 @@ const Control = () => {
             <div className={styles.hereBanData}>
               <div className={styles.block}>
                 {match.home?.name}
-                <HeroBanDropdown />
+                <HeroBanDropdown onSelectedHeroesChange={handleDropdownChange}/>
                 <br></br>
                 {match.away?.name}
-                <HeroBanDropdown />
+                <HeroBanDropdown onSelectedHeroesChange={handleDropdownChange}/>
               </div>
             </div>
           </>
