@@ -140,12 +140,14 @@ const Control = () => {
   const handleChangeHeroBansEnabled = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHeroBansEnabled(event.target.checked);
   };
-
-  const [selectedHeroes, setSelectedHeroes] = useState<string[]>([]);
-  const handleDropdownChange = (newSelectedHeroes: string[]) => {
-    setSelectedHeroes(newSelectedHeroes);
+  const [homeSelectedHeroes, setHomeSelectedHeroes] = useState<string[]>([]);
+  const [awaySelectedHeroes, setAwaySelectedHeroes] = useState<string[]>([]);
+  const handleHomeDropdownChange = (selectedHeroes: string[]) => {
+    setHomeSelectedHeroes(selectedHeroes);
   };
-
+  const handleAwayDropdownChange = (selectedHeroes: string[]) => {
+    setAwaySelectedHeroes(selectedHeroes);
+  };
 
   return (
     <>
@@ -153,10 +155,15 @@ const Control = () => {
         Show Hero Bans <input type="checkbox" name="heroBansEnabled" onChange={handleChangeHeroBansEnabled}/>
         <br></br><br></br><br></br>
 
-        Selected heroes for ban: {selectedHeroes.join(", ")}
+        Selected heroes for ban for team {match.home?.name}: {homeSelectedHeroes.join(", ")}
         <br></br>
         <br></br>
-        Banned hero nummero 3: {selectedHeroes[2]}
+        Banned hero nummero 3 for team {match.home?.name}: {homeSelectedHeroes[2]}
+        <br></br><br></br><br></br>
+        Selected heroes for ban for team {match.away?.name}: {awaySelectedHeroes.join(", ")}
+        <br></br>
+        <br></br>
+        Banned hero nummero 3 for team {match.away?.name}: {awaySelectedHeroes[2]}
 
         <h5>Next Map</h5>
         <select
@@ -398,10 +405,10 @@ const Control = () => {
             <div className={styles.hereBanData}>
               <div className={styles.block}>
                 {match.home?.name}
-                <HeroBanDropdown onSelectedHeroesChange={handleDropdownChange}/>
+                <HeroBanDropdown onSelectedHeroesChange={handleHomeDropdownChange}/>
                 <br></br>
                 {match.away?.name}
-                <HeroBanDropdown onSelectedHeroesChange={handleDropdownChange}/>
+                <HeroBanDropdown onSelectedHeroesChange={handleAwayDropdownChange}/>
               </div>
             </div>
           </>
