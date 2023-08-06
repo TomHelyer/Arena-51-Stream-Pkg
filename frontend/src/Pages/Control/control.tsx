@@ -6,7 +6,7 @@ import NextMap from "../NextMap";
 import Scoreboard from "../Scoreboard";
 import { io } from "socket.io-client";
 import HeroBans from "../HeroBans";
-import HeroBanDropdown from "../../Media/Heroes/dropdown";
+import heroLookup from "../../Media/Heroes";
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
 
@@ -50,6 +50,7 @@ const Control = () => {
   const [flip, setFlip] = useState<boolean>(false);
   const [teams, setTeams] = useState<string[]>([]);
   const [heroBansEnabled, setHeroBansEnabled] = useState(false);
+  const [heroBansState, setHeroBansState] = useState<{home: string[], away: string[]}>();
   const [uploadTeam, setUploadTeam] = useState<newTeam>({
     name: "",
   });
@@ -102,7 +103,22 @@ const Control = () => {
         });
     });
 
+    fetch(`${apiUrl}/herobans`).then(res => {
+      res.json().then(value => {
+          setHeroBansState({home:value.home, away:value.away});
+      })
+      .catch (err => {
+          console.log(err);
+      });
+    }).catch(err => {
+        console.log(err);
+    });
+
     const socket = io(apiUrl);
+
+    socket.on('heroBans', (heroBans) => {
+      setHeroBansState(heroBans.heroBans);
+    });
 
     socket.on("scoreboard:mapState", (val) => {
       setMapState(val.mapState);
@@ -140,31 +156,11 @@ const Control = () => {
   const handleChangeHeroBansEnabled = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHeroBansEnabled(event.target.checked);
   };
-  const [homeSelectedHeroes, setHomeSelectedHeroes] = useState<string[]>([]);
-  const [awaySelectedHeroes, setAwaySelectedHeroes] = useState<string[]>([]);
-  const handleHomeDropdownChange = (selectedHeroes: string[]) => {
-    setHomeSelectedHeroes(selectedHeroes);
-  };
-  const handleAwayDropdownChange = (selectedHeroes: string[]) => {
-    setAwaySelectedHeroes(selectedHeroes);
-  };
 
   return (
     <>
       <div>
         Show Hero Bans <input type="checkbox" name="heroBansEnabled" onChange={handleChangeHeroBansEnabled}/>
-        <br></br><br></br><br></br>
-
-        Selected heroes for ban for team {match.home?.name}: {homeSelectedHeroes.join(", ")}
-        <br></br>
-        <br></br>
-        Banned hero nummero 3 for team {match.home?.name}: {homeSelectedHeroes[2]}
-        <br></br><br></br><br></br>
-        Selected heroes for ban for team {match.away?.name}: {awaySelectedHeroes.join(", ")}
-        <br></br>
-        <br></br>
-        Banned hero nummero 3 for team {match.away?.name}: {awaySelectedHeroes[2]}
-
         <h5>Next Map</h5>
         <select
           value={map}
@@ -399,16 +395,41 @@ const Control = () => {
         </button>
         {heroBansEnabled ? (
           <>
-            <p>
-              <h5> Hero Bans </h5>
-            </p>
+            <h5> Hero Bans </h5>
             <div className={styles.hereBanData}>
               <div className={styles.block}>
                 {match.home?.name}
-                <HeroBanDropdown onSelectedHeroesChange={handleHomeDropdownChange}/>
+                {heroBansState?.home.map((value, key) =>  
+                <select
+                  value={value}
+                  key={key}
+                  onChange={(e) => {
+                    let newHeroBansState = heroBansState??[[],[]];
+                    newHeroBansState.home[key] = e.target.value;
+                    setHeroBansState(newHeroBansState);
+                    fetch(`${apiUrl}/heroBans`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({ heroBans: newHeroBansState }),
+                    }).catch((err) => console.log(err));
+                  }}
+                >
+                  {[...Object.keys({...heroLookup.tank, ...heroLookup.dps, ...heroLookup.support}),""].sort().map((val, key) => {
+                    return (
+                      <option value={val} key={key}>
+                        {val}
+                      </option>
+                    );
+                  })}
+                </select>
+                
+                )}
+               
                 <br></br>
                 {match.away?.name}
-                <HeroBanDropdown onSelectedHeroesChange={handleAwayDropdownChange}/>
+
               </div>
             </div>
           </>

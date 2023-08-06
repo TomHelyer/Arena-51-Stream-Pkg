@@ -63,8 +63,8 @@ let state: stateObject = {
         flip: false,
     },
     heroBans: {
-        home: [],
-        away: []
+        home: [""],
+        away: [""]
     }
 }
 
@@ -99,6 +99,19 @@ app.get('/teams/list', (req,res) => {
 app.get('/herobans',(req,res) => {
     res.json(state.heroBans);
 })
+
+app.post('/herobans',(req,res) => { 
+    if(req.body && req.body.home && req.body.away)
+    {
+        state.heroBans = req.body;
+        io.emit('heroBans', {heroBans: state.heroBans});
+
+        res.status(201).json({heroBans: state.heroBans});
+    }
+    else{
+        res.status(400).send("bad Hero object");
+    }
+});
 
 app.post('/teams/add', (req,res) => {
     if(req.body && req.body.name && req.body.logo)
