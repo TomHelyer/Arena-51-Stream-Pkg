@@ -51,6 +51,8 @@ const Control = () => {
   const [teams, setTeams] = useState<string[]>([]);
   const [heroBansEnabled, setHeroBansEnabled] = useState(false);
   const [heroBansState, setHeroBansState] = useState<{home: string[], away: string[]}>();
+  const [selectedBanStateHomeValues, setSelectedBanStateHomeValues] = useState<string[]>([]);
+  const [selectedBanStateAwayValues, setSelectedBanStateAwayValues] = useState<string[]>([]);
   const [uploadTeam, setUploadTeam] = useState<newTeam>({
     name: "",
   });
@@ -106,6 +108,8 @@ const Control = () => {
     fetch(`${apiUrl}/herobans`).then(res => {
       res.json().then(value => {
           setHeroBansState({home:value.home, away:value.away});
+          setSelectedBanStateHomeValues(value.home);
+          setSelectedBanStateAwayValues(value.away);
       })
       .catch (err => {
           console.log(err);
@@ -401,18 +405,22 @@ const Control = () => {
                 {match.home?.name}
                 {heroBansState?.home.map((value, key) =>  
                 <select
-                  value={value}
-                  key={key}
+                  value={selectedBanStateHomeValues[key]}
                   onChange={(e) => {
-                    let newHeroBansState = heroBansState??[[],[]];
-                    newHeroBansState.home[key] = e.target.value;
-                    setHeroBansState(newHeroBansState);
+                    const updatedSelectedValues = [...selectedBanStateHomeValues];
+                    updatedSelectedValues[key] = e.target.value;
+                    setSelectedBanStateHomeValues(updatedSelectedValues);
+                    const updatedHeroBansState = {
+                      ...heroBansState,
+                      home: updatedSelectedValues,
+                    };
+                    setHeroBansState(updatedHeroBansState);
                     fetch(`${apiUrl}/heroBans`, {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json",
                       },
-                      body: JSON.stringify({ heroBans: newHeroBansState }),
+                      body: JSON.stringify({ heroBans: updatedHeroBansState }),
                     }).catch((err) => console.log(err));
                   }}
                 >
@@ -429,7 +437,37 @@ const Control = () => {
                
                 <br></br>
                 {match.away?.name}
-
+                {heroBansState?.away.map((value, key) =>  
+                <select
+                  value={selectedBanStateAwayValues[key]}
+                  onChange={(e) => {
+                    const updatedSelectedValues = [...selectedBanStateAwayValues];
+                    updatedSelectedValues[key] = e.target.value;
+                    setSelectedBanStateAwayValues(updatedSelectedValues);
+                    const updatedHeroBansState = {
+                      ...heroBansState,
+                      away: updatedSelectedValues,
+                    };
+                    setHeroBansState(updatedHeroBansState);
+                    fetch(`${apiUrl}/heroBans`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({ heroBans: updatedHeroBansState }),
+                    }).catch((err) => console.log(err));
+                  }}
+                >
+                  {[...Object.keys({...heroLookup.tank, ...heroLookup.dps, ...heroLookup.support}),""].sort().map((val, key) => {
+                    return (
+                      <option value={val} key={key}>
+                        {val}
+                      </option>
+                    );
+                  })}
+                </select>
+                
+                )}
               </div>
             </div>
           </>
