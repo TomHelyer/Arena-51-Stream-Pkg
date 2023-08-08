@@ -283,41 +283,34 @@ app.post('/scoreboard/team', (req,res) => {
 })
 
 app.post('/scoreboard/score', (req, res) => {
-    if(req.body && req.body.score){
+    if(req.body && req.body.score && req.body.score[0] >= 0 && req.body.score[1] >= 0 && req.body.score[2] >= 0){
         let score = req.body.score;
         if(Array.isArray(score)){
             state.scoreboard.score = score;
             io.emit("scoreboard:score", {score:score});
-            let mapNo = score[0] + score[1] + score[2];
-            while (mapNo >= state.heroBans.home.length){
-                state.heroBans.home = [...state.heroBans.home,""]
-            }
-            while (mapNo >= state.heroBans.away.length){
-                state.heroBans.away = [...state.heroBans.away,""]
-            }
-            if (mapNo + 1 < state.heroBans.home.length){
-                let newHeroBans: string[] = []
-                for (let x = 0; x <= mapNo; x++){
-                    newHeroBans = [...newHeroBans,state.heroBans.home[x]]
-                }
-                state.heroBans.home = newHeroBans
-            }
-            if (mapNo + 1 < state.heroBans.away.length){
-                let newHeroBans: string[] = []
-                for (let x = 0; x <= mapNo; x++){
-                    newHeroBans = [...newHeroBans,state.heroBans.away[x]]
-                }
-                state.heroBans.away = newHeroBans
-            }
-            io.emit('heroBans', {heroBans:state.heroBans});
             res.status(201).json(state.scoreboard);
+
+            let mapNo = score[0] + score[1] + score[2];
+            if (mapNo >= state.heroBans.home.length){
+                state.heroBans.home.push(...Array<string>((mapNo - state.heroBans.home.length) + 1).fill(""));
+            }
+            else if(mapNo + 1 < state.heroBans.home.length){
+                state.heroBans.home = state.heroBans.home.slice(0,mapNo + 1);
+            }
+            if (mapNo >= state.heroBans.away.length){
+                state.heroBans.away.push(...Array<string>((mapNo - state.heroBans.away.length) + 1).fill(""));
+            }
+            else if(mapNo + 1 < state.heroBans.away.length){
+                state.heroBans.away = state.heroBans.away.slice(0,mapNo + 1);
+            }
+            io.emit('heroBans', {heroBans: state.heroBans});
         }
         else{
-            res.status(404).send("Invalid matchInfoObject");
+            res.status(400).send("Invalid matchInfoObject");
         }
     }
     else{
-        res.status(404).send("Invalid matchInfoObject");
+        res.status(400).send("Invalid matchInfoObject");
     }
 });
 

@@ -160,7 +160,6 @@ const Control = () => {
   return (
     <>
       <div>
-        Show Hero Bans <input type="checkbox" name="heroBansEnabled" onChange={handleChangeHeroBansEnabled}/>
         <h5>Next Map</h5>
         <select
           value={map}
@@ -319,7 +318,7 @@ const Control = () => {
           +
         </button>
         <button
-          onClick={(e) => updateScore([score[0] - 1, score[1], score[2]])}
+          onClick={(e) => updateScore([score[0] > 0? score[0] - 1: score[0], score[1], score[2]])}
         >
           -
         </button>
@@ -355,7 +354,7 @@ const Control = () => {
           +
         </button>
         <button
-          onClick={(e) => updateScore([score[0], score[1] - 1, score[2]])}
+          onClick={(e) => updateScore([score[0], score[1] > 0? score[1] - 1: score[1], score[2]])}
         >
           -
         </button>
@@ -366,7 +365,7 @@ const Control = () => {
           +
         </button>
         <button
-          onClick={(e) => updateScore([score[0], score[1], score[2] - 1])}
+          onClick={(e) => updateScore([score[0], score[1], score[2] > 0? score[2] - 1: score[2]])}
         >
           -
         </button>
@@ -394,21 +393,22 @@ const Control = () => {
           reset score
         </button>
 
+        <h5> Hero Bans <input type="checkbox" name="heroBansEnabled" onChange={handleChangeHeroBansEnabled}/></h5> 
         {heroBansEnabled ? (
           <>
-            <h5> Hero Bans </h5>
+            
             <div className={styles.hereBanData}>
               <div className={styles.block}>
                 {match.home?.name}
                 {heroBansState?.home.map((value, key) =>  
                 <select
-                  key={value}
+                  key={key}
                   value={heroBansState.home[key]}
                   onChange={(e) => {
-                    const updatedSelectedValues = [...heroBansState.home];
+                    const updatedSelectedValues = heroBansState.home;
                     updatedSelectedValues[key] = e.target.value;
                     const updatedHeroBansState = {
-                      ...heroBansState,
+                      away: heroBansState.away,
                       home: updatedSelectedValues,
                     };
                     fetch(`${apiUrl}/heroBans`, {
@@ -435,13 +435,13 @@ const Control = () => {
                 {match.away?.name}
                 {heroBansState?.away.map((value, key) =>  
                 <select
-                  key={value}
+                  key={key}
                   value={heroBansState.away[key]}
                   onChange={(e) => {
-                    const updatedSelectedValues = [...heroBansState.away];
+                    const updatedSelectedValues = heroBansState.away;
                     updatedSelectedValues[key] = e.target.value;
                     const updatedHeroBansState = {
-                      ...heroBansState,
+                      home: heroBansState.home,
                       away: updatedSelectedValues,
                     };
                     fetch(`${apiUrl}/heroBans`, {
@@ -453,7 +453,9 @@ const Control = () => {
                     }).catch((err) => console.log(err));
                   }}
                 >
-                  {[...Object.keys({...heroLookup.tank, ...heroLookup.dps, ...heroLookup.support}),""].sort().map((val, key) => {
+                  {[...Object.keys({...heroLookup.tank, ...heroLookup.dps, ...heroLookup.support}),""].sort()
+                    .filter((v, k) => value===v || !((heroBansState.home.includes(v)) || (heroBansState.away.includes(v))))
+                    .map((val, key) => {
                     return (
                       <option value={val} key={key}>
                         {val}

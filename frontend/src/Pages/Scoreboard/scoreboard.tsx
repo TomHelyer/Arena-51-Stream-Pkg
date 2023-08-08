@@ -198,44 +198,44 @@ const Scoreboard = ({displayDemo = false}: {displayDemo?: boolean}) => {
     }, [match]);
 
     return (
-        <div className={`${styles.frame} ${flip? styles.flip : ""} ${displayDemo? styles.demoImg : ""}`}>
+        <div className={`${styles.frame} ${displayDemo? styles.demoImg : ""}`}>
             <div className={`${styles.team}`}>
-                <div className={`${styles.logo} ${flip? styles.flip : ""}`}>
-                    <img className={styles.img} src={`data:image/png;base64, ${images[0]}`} alt={match.home.name[0]}/>
+                <div className={`${styles.logo}`}>
+                    <img className={styles.img} src={`data:image/png;base64, ${flip? images[1] : images[0]}`} alt={flip? match.away.name[0] : match.home.name[0]}/>
                 </div>
-                <div className={`${styles.teamName} ${flip? styles.flip : ""}`}>
+                <div className={`${styles.teamName}`}>
                     <div className={styles.backgroundImg}>
-                        <img className={styles.transImg} src={`data:image/png;base64, ${images[0]}`} alt={""}/>
+                        <img className={styles.transImg} src={`data:image/png;base64, ${flip? images[1] : images[0]}`} alt={""}/>
                     </div>
                     <div className={styles.textOnTop}>
-                        <p className={styles.text}>{match.home.name}</p>
+                        <p className={styles.text}>{flip? match.away.name: match.home.name}</p>
                     </div>
                 </div>
-                <div className={`${styles.score} ${flip? styles.awayCol : styles.homeCol}`}>
-                    <p className={styles.text}>{score[0]}</p>
+                <div className={`${styles.score} ${styles.homeCol}`}>
+                    <p className={styles.text}>{flip? score[1] : score[0]}</p>
                 </div>
-                <div className={`${styles.icon} ${flip? styles.flip : ""}`}>
+                <div className={`${styles.icon} ${styles.flip}`}>
                     <img src={homeMapStates[mapState]} alt=""/>
                 </div>
             </div>
 
             <div className={`${styles.team} ${styles.flip}`}>
-                <div className={`${styles.logo} ${flip? "" : styles.flip}`}>
-                    <img className={styles.img} src={`data:image/png;base64, ${images[1]}`} alt={match.away.name[0]}/>
+                <div className={`${styles.logo} ${styles.flip}`}>
+                    <img className={styles.img} src={`data:image/png;base64, ${!flip? images[1] : images[0]}`} alt={!flip? match.away.name[0] : match.home.name[0]}/>
                 </div>
-                <div className={`${styles.teamName} ${flip? "" : styles.flip}`}>
+                <div className={`${styles.teamName} ${styles.flip}`}>
                     <div className={styles.backgroundImg}>
-                        <img className={styles.transImg} src={`data:image/png;base64, ${images[1]}`} alt={""}/>
+                        <img className={styles.transImg} src={`data:image/png;base64, ${!flip? images[1] : images[0]}`} alt={""}/>
                     </div>
                     <div className={styles.textOnTop}>
-                        <p className={styles.text}>{match.away.name}</p>
+                        <p className={styles.text}>{!flip? match.away.name: match.home.name}</p>
                     </div>
                 </div>
-                <div className={`${styles.score} ${flip? styles.homeCol : styles.awayCol} ${styles.flip}`}>
-                    <p className={`${styles.text}`}>{score[1]}</p>
+                <div className={`${styles.score} ${styles.awayCol} ${styles.flip}`}>
+                    <p className={styles.text}>{!flip? score[1] : score[0]}</p>
                 </div>
-                <div className={styles.icon}>
-                    <img className={styles.img} src={awayMapStates[mapState]} alt=""/>
+                <div className={`${styles.icon}`}>
+                    <img src={awayMapStates[mapState]} alt=""/>
                 </div>
             </div>
             {flip}

@@ -4,12 +4,12 @@ const createStyles = createUseStyles({
     cardCont: {
         position: "relative",
         aspectRatio: "0.79",
-        width: "20%",
-        height: "auto",
-        margin: "2%",
+        height: "22%",
+        borderRadius: "4px",
+        border: "0.2em white solid",
+        margin: "0.2em",
         display: "flex",
         alignItems: "center",
-        overflow: "hidden"
     },
     img: {
         position: "absolute",
@@ -18,14 +18,22 @@ const createStyles = createUseStyles({
         width: "100%",
         height: "100%"
     },
-    ban: {
+    banCont:{
         position: "absolute",
         top: "0",
-        left: "-1%",
-        width: "102%",
-        aspectRatio: "1",
-        opacity: "0.65",
+        height: "100%",
+        width: "100%",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'start',
+        overflow: 'hidden',
         backgroundColor: "white",
+        opacity: '0.7',
+    },
+    ban: {
+        width: "100%",
+        aspectRatio: "1",
+        opacity: "1",
     }
 });
 
@@ -35,7 +43,12 @@ const HeroBanCard = ({hero, banBy=undefined}: HeroBanCardProps) => {
     return (
         <div className={styles.cardCont}>
             <img className={styles.img} src={hero} alt={""}/>
-            {banBy&&<img className={styles.ban} src={`data:image/png;base64, ${banBy}`} alt={""}/>}
+            
+            {banBy &&
+                <div className={styles.banCont}>
+                    <img className={styles.ban} src={`data:image/png;base64, ${banBy}`} alt={""}/>
+                </div>
+            }
         </div>
     )
 }
