@@ -3,7 +3,7 @@ import {createUseStyles} from 'react-jss';
 import { io } from 'socket.io-client';
 import { main } from '../../Media/Scenes';
 import HeroBanCard from './heroBanCard';
-import heroLookup from '../../Media/Heroes';
+import heroLookup from '../../Media/HeroesIcons';
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
 
@@ -57,7 +57,7 @@ const HeroBans = () => {
     useEffect(() => {
         fetch(`${apiUrl}/herobans`).then(res => {
             res.json().then(value => {
-                setHeroBans({home:value.home, away:value.away});
+                setHeroBans(value.heroBans);
             })
             .catch (err => {
                 console.log(err);
@@ -65,22 +65,20 @@ const HeroBans = () => {
         }).catch(err => {
             console.log(err);
         });
+        
+        fetch(`${apiUrl}/scoreboard`).then(res => res.json().then((val: ScorebaordObject) => {
+            setMatch(val.match);
+        }));
 
         const socket = io(apiUrl);
 
-        socket.on('heroBans', (heroBans) => {
-            setHeroBans(heroBans.heroBans);
+        socket.on('heroBans', (value) => {
+            setHeroBans(value.heroBans);
         });
-        
-        fetch(`${apiUrl}/scoreboard`).then(res => res.json().then((val: ScorebaordObject) => {
-
-            setMatch(val.match);
-        }));
 
         socket.on('scoreboard:match', val => {
             setMatch(val.match);
         });
-        console.log("Test")
     }, []);
 
     useEffect(() => {
@@ -112,20 +110,42 @@ const HeroBans = () => {
             <div className={styles.heroContainerContainer}>
                 <div className={styles.heroContainer}>
                     {Object.keys(heroLookup.tank).map((key, idx) => {
-                        const value = heroLookup.tank[key];
-                        let bannedBy;
-                        if (heroBans?.home.every(value => value && value!==key))
-                            bannedBy = images[0];
-                        if (heroBans?.away.every(value => value && value!==key))
-                            bannedBy = images[1];
-                        return <HeroBanCard hero={value} key={idx} banBy={bannedBy}/>
-                    })}  
+                        const img = heroLookup.tank[key];
+                        let bannedBy = undefined;
+                        if(heroBans){
+                            if (!heroBans.home.every(value => value!==key))
+                                bannedBy = images[0];
+                            if (!heroBans.away.every(value => value!==key))
+                                bannedBy = images[1];
+                        }
+                        return <HeroBanCard hero={img} key={idx} banBy={bannedBy}/>
+                    })}
                 </div>
                 <div className={styles.heroContainer}>
-                    {Object.values(heroLookup.dps).map((value, idx) => <HeroBanCard hero={value} key={idx}/>)}
+                    {Object.keys(heroLookup.dps).map((key, idx) => {
+                        const img = heroLookup.dps[key];
+                        let bannedBy = undefined;
+                        if(heroBans){
+                            if (!heroBans.home.every(value => value!==key))
+                                bannedBy = images[0];
+                            if (!heroBans.away.every(value => value!==key))
+                                bannedBy = images[1];
+                        }
+                        return <HeroBanCard hero={img} key={idx} banBy={bannedBy}/>
+                    })}
                 </div>
                 <div className={styles.heroContainer}>
-                    {Object.values(heroLookup.support).map((value, idx) => <HeroBanCard hero={value} key={idx}/>)}
+                {Object.keys(heroLookup.support).map((key, idx) => {
+                        const img = heroLookup.support[key];
+                        let bannedBy = undefined;
+                        if(heroBans){
+                            if (!heroBans.home.every(value => value!==key))
+                                bannedBy = images[0];
+                            if (!heroBans.away.every(value => value!==key))
+                                bannedBy = images[1];
+                        }
+                        return <HeroBanCard hero={img} key={idx} banBy={bannedBy}/>
+                    })}
                 </div>
             </div>
         </div>

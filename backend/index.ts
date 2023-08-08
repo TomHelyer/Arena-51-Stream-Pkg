@@ -97,14 +97,16 @@ app.get('/teams/list', (req,res) => {
 })
 
 app.get('/herobans',(req,res) => {
-    res.json(state.heroBans);
+    res.json({heroBans: state.heroBans});
 })
 
 app.post('/herobans',(req,res) => { 
-    if(req.body && req.body.home && req.body.away)
+    if(req.body && req.body.heroBans && req.body.heroBans.home && req.body.heroBans.away)
     {
-        state.heroBans = req.body;
+        state.heroBans = req.body.heroBans;
         io.emit('heroBans', {heroBans: state.heroBans});
+
+        console.log(state.heroBans);
 
         res.status(201).json({heroBans: state.heroBans});
     }

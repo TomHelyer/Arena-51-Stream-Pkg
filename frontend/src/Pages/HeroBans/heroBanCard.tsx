@@ -1,9 +1,4 @@
-import { useEffect, useState } from 'react';
 import {createUseStyles} from 'react-jss';
-import { io } from 'socket.io-client';
-import { main } from '../../Media/Scenes';
-
-const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
 
 const createStyles = createUseStyles({
     cardCont: {

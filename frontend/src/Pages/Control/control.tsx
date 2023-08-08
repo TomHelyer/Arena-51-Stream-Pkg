@@ -6,7 +6,7 @@ import NextMap from "../NextMap";
 import Scoreboard from "../Scoreboard";
 import { io } from "socket.io-client";
 import HeroBans from "../HeroBans";
-import heroLookup from "../../Media/Heroes";
+import heroLookup from "../../Media/HeroesIcons";
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
 
@@ -51,8 +51,6 @@ const Control = () => {
   const [teams, setTeams] = useState<string[]>([]);
   const [heroBansEnabled, setHeroBansEnabled] = useState(false);
   const [heroBansState, setHeroBansState] = useState<{home: string[], away: string[]}>();
-  const [selectedBanStateHomeValues, setSelectedBanStateHomeValues] = useState<string[]>([]);
-  const [selectedBanStateAwayValues, setSelectedBanStateAwayValues] = useState<string[]>([]);
   const [uploadTeam, setUploadTeam] = useState<newTeam>({
     name: "",
   });
@@ -107,9 +105,7 @@ const Control = () => {
 
     fetch(`${apiUrl}/herobans`).then(res => {
       res.json().then(value => {
-          setHeroBansState({home:value.home, away:value.away});
-          setSelectedBanStateHomeValues(value.home);
-          setSelectedBanStateAwayValues(value.away);
+          setHeroBansState(value.heroBans);
       })
       .catch (err => {
           console.log(err);
@@ -120,8 +116,8 @@ const Control = () => {
 
     const socket = io(apiUrl);
 
-    socket.on('heroBans', (heroBans) => {
-      setHeroBansState(heroBans.heroBans);
+    socket.on('heroBans', (value) => {
+      setHeroBansState(value.heroBans);
     });
 
     socket.on("scoreboard:mapState", (val) => {
@@ -397,6 +393,7 @@ const Control = () => {
         >
           reset score
         </button>
+
         {heroBansEnabled ? (
           <>
             <h5> Hero Bans </h5>
@@ -405,16 +402,15 @@ const Control = () => {
                 {match.home?.name}
                 {heroBansState?.home.map((value, key) =>  
                 <select
-                  value={selectedBanStateHomeValues[key]}
+                  key={value}
+                  value={heroBansState.home[key]}
                   onChange={(e) => {
-                    const updatedSelectedValues = [...selectedBanStateHomeValues];
+                    const updatedSelectedValues = [...heroBansState.home];
                     updatedSelectedValues[key] = e.target.value;
-                    setSelectedBanStateHomeValues(updatedSelectedValues);
                     const updatedHeroBansState = {
                       ...heroBansState,
                       home: updatedSelectedValues,
                     };
-                    setHeroBansState(updatedHeroBansState);
                     fetch(`${apiUrl}/heroBans`, {
                       method: "POST",
                       headers: {
@@ -439,16 +435,15 @@ const Control = () => {
                 {match.away?.name}
                 {heroBansState?.away.map((value, key) =>  
                 <select
-                  value={selectedBanStateAwayValues[key]}
+                  key={value}
+                  value={heroBansState.away[key]}
                   onChange={(e) => {
-                    const updatedSelectedValues = [...selectedBanStateAwayValues];
+                    const updatedSelectedValues = [...heroBansState.away];
                     updatedSelectedValues[key] = e.target.value;
-                    setSelectedBanStateAwayValues(updatedSelectedValues);
                     const updatedHeroBansState = {
                       ...heroBansState,
                       away: updatedSelectedValues,
                     };
-                    setHeroBansState(updatedHeroBansState);
                     fetch(`${apiUrl}/heroBans`, {
                       method: "POST",
                       headers: {
