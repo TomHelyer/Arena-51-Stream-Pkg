@@ -6,6 +6,7 @@ import 'remixicon/fonts/remixicon.css';
 import { createUseStyles } from "react-jss";
 import CasterCams from "./Pages/CasterCams";
 import Scoreboard from "./Pages/Scoreboard";
+import HeroBans from "./Pages/HeroBans";
 
 const createStyles = createUseStyles({
   nextmap: {
@@ -35,6 +36,11 @@ const App = () => {
           <Route path="scoreboard" element={
             <div className={styles.nextmap} >
               <Scoreboard />
+            </div>
+          } />
+          <Route path="herobans" element={
+            <div className={styles.nextmap} >
+              <HeroBans />
             </div>
           } />
         </Route>

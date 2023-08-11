@@ -73,7 +73,7 @@ const CasterCams = () => {
             <Scoreboard />
             <embed className={`${styles.caster}`} src={casters[0]?.vdo ?? "https://vdo.ninja/?view=XRmNCts&password=H3ll3r_G%40m3r&label=Arena51Caster1"}/>
             <embed className={`${styles.caster2} ${styles.caster}`} src={casters[1]?.vdo ?? "https://vdo.ninja/?view=mSuqjbX&password=H3ll3r_G%40m3r&label=Arena51Caster2"}/>
-            <video className={styles.background} src={nameplate}/>
+            <video className={styles.background} loop autoPlay src={nameplate}/>
             <video className={`${styles.background} ${styles.flipped}`} loop autoPlay src={nameplate}/>
             <div className={styles.nameCont}>
                 <h1 className={styles.name}>{casters[0]? casters[0].name : ""}</h1>

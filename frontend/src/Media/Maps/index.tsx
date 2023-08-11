@@ -11,10 +11,15 @@ import nepal from './Welcome to Nepal.mp4';
 import oasis from './Welcome to Oasis.mp4';
 import rialto from './Welcome to Rialto.mp4';
 import route from './Welcome to Route 66.mp4';
+import colosseo from './Welcome to Colosseo.mp4';
+import esperanca from './Welcome to Esperanca.mp4';
+import newqueenstreet from './Welcome to New Queen Street.mp4';
 
 const mapLookup: object = {
     busan,
+    colosseo,
     eich,
+    esperanca,
     gib,
     havana,
     hollywood,
@@ -23,6 +28,7 @@ const mapLookup: object = {
     kings,
     lijiang,
     nepal,
+    newqueenstreet,
     oasis,
     rialto,
     route

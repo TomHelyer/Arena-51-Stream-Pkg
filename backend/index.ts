@@ -47,7 +47,7 @@ let state: stateObject = {
         }
     ],
     scoreboard: {
-        score:[0,0],
+        score:[0,0,0],
         match: {
             home: {
                 name: "Home",
@@ -62,6 +62,10 @@ let state: stateObject = {
         mapState: mapState.Home,
         flip: false,
     },
+    heroBans: {
+        home: [""],
+        away: [""]
+    }
 }
 
 let leagueInfo: leagueInfoObject = {
@@ -91,6 +95,25 @@ app.get('/scoreboard', (req,res) => {
 app.get('/teams/list', (req,res) => {
     res.json(teamList);
 })
+
+app.get('/herobans',(req,res) => {
+    res.json({heroBans: state.heroBans});
+})
+
+app.post('/herobans',(req,res) => { 
+    if(req.body && req.body.heroBans && req.body.heroBans.home && req.body.heroBans.away)
+    {
+        state.heroBans = req.body.heroBans;
+        io.emit('heroBans', {heroBans: state.heroBans});
+
+        console.log(state.heroBans);
+
+        res.status(201).json({heroBans: state.heroBans});
+    }
+    else{
+        res.status(400).send("bad Hero object");
+    }
+});
 
 app.post('/teams/add', (req,res) => {
     if(req.body && req.body.name && req.body.logo)
@@ -260,19 +283,34 @@ app.post('/scoreboard/team', (req,res) => {
 })
 
 app.post('/scoreboard/score', (req, res) => {
-    if(req.body && req.body.score){
+    if(req.body && req.body.score && req.body.score[0] >= 0 && req.body.score[1] >= 0 && req.body.score[2] >= 0){
         let score = req.body.score;
         if(Array.isArray(score)){
             state.scoreboard.score = score;
             io.emit("scoreboard:score", {score:score});
             res.status(201).json(state.scoreboard);
+
+            let mapNo = score[0] + score[1] + score[2];
+            if (mapNo >= state.heroBans.home.length){
+                state.heroBans.home.push(...Array<string>((mapNo - state.heroBans.home.length) + 1).fill(""));
+            }
+            else if(mapNo + 1 < state.heroBans.home.length){
+                state.heroBans.home = state.heroBans.home.slice(0,mapNo + 1);
+            }
+            if (mapNo >= state.heroBans.away.length){
+                state.heroBans.away.push(...Array<string>((mapNo - state.heroBans.away.length) + 1).fill(""));
+            }
+            else if(mapNo + 1 < state.heroBans.away.length){
+                state.heroBans.away = state.heroBans.away.slice(0,mapNo + 1);
+            }
+            io.emit('heroBans', {heroBans: state.heroBans});
         }
         else{
-            res.status(404).send("Invalid matchInfoObject");
+            res.status(400).send("Invalid matchInfoObject");
         }
     }
     else{
-        res.status(404).send("Invalid matchInfoObject");
+        res.status(400).send("Invalid matchInfoObject");
     }
 });
 
@@ -323,7 +361,13 @@ const castersCheck: (obj: CastersObject) => boolean = (obj) => {
 type stateObject = {
     casters: CastersObject,
     nextMap: string,
-    scoreboard: scoreboardObject
+    scoreboard: scoreboardObject,
+    heroBans: HeroBansObject
+}
+
+type HeroBansObject = {
+    home: string[],
+    away: string[]
 }
 
 type scoreboardObject = {
