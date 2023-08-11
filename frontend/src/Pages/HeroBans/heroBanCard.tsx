@@ -34,14 +34,13 @@ const createStyles = createUseStyles({
     ban: {
         width: "100%",
         aspectRatio: "1",
-        opacity: "1",
     },
     banned:{
-        opacity: "0.4"
+        opacity: "0.2"
     },
     newBan: {
         //borderColor: "#d63750",
-        backgroundColor: "#d63750",
+        backgroundColor: "#faa",
     }
 });
 

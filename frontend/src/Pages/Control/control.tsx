@@ -67,6 +67,18 @@ const Control = () => {
     }).catch((err) => console.log(err));
   };
 
+
+  const updateBans: (bans: {home: string[], away: string[]}) => void = (bans) => {
+    setHeroBansState(bans);
+    fetch(`${apiUrl}/heroBans`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ heroBans: bans }),
+    }).catch((err) => console.log(err));
+  };
+
   useEffect(() => {
     fetch(`${apiUrl}/nextmap`)
       .then((res) => {
@@ -388,7 +400,10 @@ const Control = () => {
           {flip ? "on" : "off"}
         </button>
         <button
-          onClick={(e) => updateScore([score[0] = 0, score[1] = 0, score[2] = 0])}
+          onClick={(e) => {
+            updateScore([score[0] = 0, score[1] = 0, score[2] = 0])
+            updateBans({home: [""],away: [""]})
+          }}
         >
           reset score
         </button>
@@ -411,13 +426,7 @@ const Control = () => {
                       away: heroBansState.away,
                       home: updatedSelectedValues,
                     };
-                    fetch(`${apiUrl}/heroBans`, {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({ heroBans: updatedHeroBansState }),
-                    }).catch((err) => console.log(err));
+                    updateBans(updatedHeroBansState);
                   }}
                 >
                   {[...Object.keys({...heroLookup.tank, ...heroLookup.dps, ...heroLookup.support}),""].sort()

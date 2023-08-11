@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {createUseStyles} from 'react-jss';
 import { io } from 'socket.io-client';
-import { main, nameplate } from '../../Media/Scenes';
+import { main } from '../../Media/Scenes';
 import HeroBanCard from './heroBanCard';
 import heroLookup from '../../Media/HeroesIcons';
 
@@ -52,7 +52,7 @@ const createStyles = createUseStyles({
     },
     heroContainerContainer: {
         position: "absolute",
-        top: "15%",
+        top: "10%",
         height: "74%",
         width: "94%",
         alignSelf: "center",
@@ -93,7 +93,6 @@ const HeroBans = () => {
             rank: "Bronze",
         }
     });
-    const [score, setScore] = useState<ScoreObject>([0,0,0]);
 
     useEffect(() => {
         fetch(`${apiUrl}/herobans`).then(res => {
@@ -109,7 +108,6 @@ const HeroBans = () => {
         
         fetch(`${apiUrl}/scoreboard`).then(res => res.json().then((val: ScorebaordObject) => {
             setMatch(val.match);
-            setScore(val.score);
         }));
 
         const socket = io(apiUrl);
@@ -120,10 +118,6 @@ const HeroBans = () => {
 
         socket.on('scoreboard:match', val => {
             setMatch(val.match);
-        });
-
-        socket.on('scoreboard:score', val => {
-            setScore(val.score);
         });
     }, []);
 
@@ -153,24 +147,20 @@ const HeroBans = () => {
     return (
         <div className={styles.cont}>
             <video className={styles.background} loop autoPlay src={main}/>
-            {
-                //<video className={styles.title} loop autoPlay src={nameplate}/>
-            }
-            <div className={styles.nameCont}>
-                <h1 className={styles.name}>{`Map ${(score[0] + score[1] + score[2] + 1)} Bans`}</h1>
-            </div>
             <div className={styles.heroContainerContainer}>
                 <div className={styles.heroContainer}>
                     {Object.keys(heroLookup.tank).map((key, idx) => {
                         const img = heroLookup.tank[key];
                         let bannedBy = undefined;
+                        let newBan = false;
                         if(heroBans){
                             if (!heroBans.home.every(value => value!==key))
                                 bannedBy = images[0];
                             if (!heroBans.away.every(value => value!==key))
                                 bannedBy = images[1];
+                            newBan = heroBans.away[heroBans.away.length-1] === key || heroBans.home[heroBans.home.length-1] === key
                         }
-                        return <HeroBanCard hero={img} key={idx} banBy={bannedBy}/>
+                        return <HeroBanCard hero={img} key={idx} banBy={bannedBy} newBan={newBan}/>
                     })}
                 </div>
                 <div className={styles.dpsContainer}>
