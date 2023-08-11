@@ -177,26 +177,30 @@ const HeroBans = () => {
                     {Object.keys(heroLookup.dps).map((key, idx) => {
                         const img = heroLookup.dps[key];
                         let bannedBy = undefined;
+                        let newBan = false;
                         if(heroBans){
                             if (!heroBans.home.every(value => value!==key))
                                 bannedBy = images[0];
                             if (!heroBans.away.every(value => value!==key))
                                 bannedBy = images[1];
+                            newBan = heroBans.away[heroBans.away.length-1] === key || heroBans.home[heroBans.home.length-1] === key
                         }
-                        return <HeroBanCard hero={img} key={idx} banBy={bannedBy}/>
+                        return <HeroBanCard hero={img} key={idx} banBy={bannedBy} newBan={newBan}/>
                     })}
                 </div>
                 <div className={styles.heroContainer}>
                 {Object.keys(heroLookup.support).map((key, idx) => {
                         const img = heroLookup.support[key];
                         let bannedBy = undefined;
+                        let newBan = false;
                         if(heroBans){
                             if (!heroBans.home.every(value => value!==key))
                                 bannedBy = images[0];
                             if (!heroBans.away.every(value => value!==key))
                                 bannedBy = images[1];
+                            newBan = heroBans.away[heroBans.away.length-1] === key || heroBans.home[heroBans.home.length-1] === key
                         }
-                        return <HeroBanCard hero={img} key={idx} banBy={bannedBy}/>
+                        return <HeroBanCard hero={img} key={idx} banBy={bannedBy} newBan={newBan}/>
                     })}
                 </div>
             </div>

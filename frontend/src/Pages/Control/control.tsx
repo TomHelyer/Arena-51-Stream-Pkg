@@ -420,7 +420,9 @@ const Control = () => {
                     }).catch((err) => console.log(err));
                   }}
                 >
-                  {[...Object.keys({...heroLookup.tank, ...heroLookup.dps, ...heroLookup.support}),""].sort().map((val, key) => {
+                  {[...Object.keys({...heroLookup.tank, ...heroLookup.dps, ...heroLookup.support}),""].sort()
+                  .filter((v, k) => value===v || !((heroBansState.home.includes(v)) || (heroBansState.away.includes(v))))
+                  .map((val, key) => {
                     return (
                       <option value={val} key={key}>
                         {val}
