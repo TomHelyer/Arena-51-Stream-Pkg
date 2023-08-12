@@ -215,6 +215,7 @@ const Scoreboard = ({displayDemo = false}: {displayDemo?: boolean}) => {
                     <p className={styles.text}>{flip? score[1] : score[0]}</p>
                 </div>
                 <div className={`${styles.icon}`}>
+
                     <img src={homeMapStates[mapState]} alt=""/>
                 </div>
             </div>
