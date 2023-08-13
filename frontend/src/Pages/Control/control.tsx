@@ -50,6 +50,7 @@ const Control = () => {
   const [flip, setFlip] = useState<boolean>(false);
   const [teams, setTeams] = useState<string[]>([]);
   const [heroBansEnabled, setHeroBansEnabled] = useState(false);
+  const [previewsEnabled, setPreviewEnabled] = useState(false);
   const [heroBansState, setHeroBansState] = useState<{home: string[], away: string[]}>();
   const [uploadTeam, setUploadTeam] = useState<newTeam>({
     name: "",
@@ -164,11 +165,6 @@ const Control = () => {
       }).catch((err) => console.log(err));
     }
   }, [casters]);
-
-  const handleChangeHeroBansEnabled = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setHeroBansEnabled(event.target.checked);
-  };
-
   return (
     <>
       <div>
@@ -408,7 +404,7 @@ const Control = () => {
           reset score
         </button>
 
-        <h5> Hero Bans <input type="checkbox" name="heroBansEnabled" onChange={handleChangeHeroBansEnabled}/></h5> 
+        <h5> Hero Bans <input type="checkbox" name="heroBansEnabled" onChange={(e) => setHeroBansEnabled(e.target.checked) }/></h5> 
         {heroBansEnabled ? (
           <>
             
@@ -538,32 +534,35 @@ const Control = () => {
           submit
         </button>
       </div>
-      <div className={styles.col}>
-        <div className={styles.sceneCont}>
-          <h3>/NextMap</h3>
-          <div className={styles.scene}>
-            <NextMap muted={true} />
+      <h5>Previews <input type="checkbox" name="previewsEnabled" onChange={(e) => setPreviewEnabled(e.target.checked) }/></h5>
+      {previewsEnabled && 
+        <div className={styles.col}>
+          <div className={styles.sceneCont}>
+            <h3>/NextMap</h3>
+            <div className={styles.scene}>
+              <NextMap muted={true} />
+            </div>
+          </div>
+          <div className={styles.sceneCont}>
+            <h3>/CasterCams</h3>
+            <div className={styles.scene}>
+              <CasterCams />
+            </div>
+          </div>
+          <div className={styles.sceneCont}>
+            <h3>/ScoreBoard</h3>
+            <div className={styles.scene}>
+              <Scoreboard displayDemo={true} />
+            </div>
+          </div>
+          <div className={styles.sceneCont}>
+            <h3>/HeroBans</h3>
+            <div className={styles.scene}>
+              <HeroBans />
+            </div>
           </div>
         </div>
-        <div className={styles.sceneCont}>
-          <h3>/CasterCams</h3>
-          <div className={styles.scene}>
-            <CasterCams />
-          </div>
-        </div>
-        <div className={styles.sceneCont}>
-          <h3>/ScoreBoard</h3>
-          <div className={styles.scene}>
-            <Scoreboard displayDemo={true} />
-          </div>
-        </div>
-        <div className={styles.sceneCont}>
-          <h3>/HeroBans</h3>
-          <div className={styles.scene}>
-            <HeroBans />
-          </div>
-        </div>
-      </div>
+      }
     </>
   );
 };
