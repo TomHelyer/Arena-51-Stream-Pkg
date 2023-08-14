@@ -92,7 +92,7 @@ export type MatchInfoObject = {
 }
 
 export type StopCondition = {
-    type: MatchStoptype,
+    type: MatchStopType,
     value: number
 }
 
