@@ -1,5 +1,6 @@
 import express from 'express';
 import { Server } from 'socket.io';import { genTable, generateMatches, matchMapResult } from "../handlers/league";
+import { LeagueInfoObject, TeamInfoObject, ScoreInfoObject } from '../types';
 
 let leagueInfo: LeagueInfoObject = {
   teams: [],

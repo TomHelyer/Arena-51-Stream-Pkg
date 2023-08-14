@@ -1,3 +1,5 @@
+import { MatchInfoObject, MatchStopType, Result, TableInfoObject } from "../types";
+
 export const generateMatches: (numTeams: number) => MatchInfoObject[] = (numTeams) => {
     let matches: MatchInfoObject[] = [];
     let rndIndexer = indexRnd(numTeams);

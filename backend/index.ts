@@ -2,9 +2,9 @@ import express from "express";
 import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
-
-import fs from "fs";
 import 'dotenv/config';
+
+import { ScoreObject } from "./types";
 
 import caster from './routes/caster';
 import nextMap from './routes/next-map';

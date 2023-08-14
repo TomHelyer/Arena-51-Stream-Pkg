@@ -1,76 +1,76 @@
-enum MapState{
+export enum MapState{
     Con=0,
     Home=1,
     Away=2,
 }
 
-type CasterObject = {
+export type CasterObject = {
     name: string,
     vdo?: string
 }
 
-type StateObject = {
+export type StateObject = {
     casters: CastersObject,
     nextMap: string,
     scoreboard: ScoreboardObject,
     heroBans: HeroBansObject
 }
 
-type HeroBansObject = {
+export type HeroBansObject = {
     home: string[],
     away: string[]
 }
 
-type ScoreboardObject = {
+export type ScoreboardObject = {
     score: ScoreObject,
     match: ScoreboardInfoObject,
     mapState: MapState,
     flip: boolean
 }
 
-type StatsObject = {
+export type StatsObject = {
     points?: number,
     winLossDraw?: number[],
     mapDiff?: number,
 }
 
-type ScoreboardInfoObject = {
+export type ScoreboardInfoObject = {
     home: TeamObject,
     away: TeamObject,
     stats?: StatsObject[],
 }
 
-type CastersObject = CasterObject[]
+export type CastersObject = CasterObject[]
 
-type ScoreObject = number[];
+export type ScoreObject = number[];
 
-type TeamObject = {
+export type TeamObject = {
     name: string,
     rank: "Bronze" | "Silver" | "Gold" | "Diamond" | "Platinum" | "Master" | "Grand Master" | "Top 500",
 }
 
-enum Result{
+export enum Result{
     Home = 1,
     Draw = 0,
     Away = -1,
 }
 
-enum MatchStopType{
+export enum MatchStopType{
     BestOf,
     FirstTo,
     NumMaps,
 }
 
-type LeagueInfoObject = {
+export type LeagueInfoObject = {
     teams: TeamInfoObject[],
     matches: MatchInfoObject[],
     table: TableInfoObject,
     isComplete?: boolean,
 }
 
-type TableInfoObject = TableRowInfoObject[]
+export type TableInfoObject = TableRowInfoObject[]
 
-type TableRowInfoObject = {
+export type TableRowInfoObject = {
     team: number,
     points: number,
     mapDiff: number,
@@ -81,7 +81,7 @@ type TableRowInfoObject = {
     live?: boolean
 }
 
-type MatchInfoObject = {
+export type MatchInfoObject = {
     home: number,
     away: number,
     week: number,
@@ -91,18 +91,18 @@ type MatchInfoObject = {
     live?: boolean
 }
 
-type StopCondition = {
-    type: MatchStopType,
+export type StopCondition = {
+    type: MatchStoptype,
     value: number
 }
 
-type ScoreInfoObject = {
+export type ScoreInfoObject = {
     home: number,
     away: number,
     mapsPlayed: number,
 }
 
-type TeamInfoObject = {
+export type TeamInfoObject = {
     name: string,
     sr: number,
 }

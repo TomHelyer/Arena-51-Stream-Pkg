@@ -1,5 +1,6 @@
 import express from 'express';
 import { Server } from 'socket.io';
+import { CastersObject } from '../types';
 
 const casterCheck = (obj: any) => {
   return obj.name !== undefined;

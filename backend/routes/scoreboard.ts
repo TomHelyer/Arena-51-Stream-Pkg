@@ -1,5 +1,6 @@
 import express from 'express';
 import { Server } from 'socket.io';
+import { MapState, ScoreObject, ScoreboardInfoObject, ScoreboardObject } from '../types';
 
 const teamObjectCheck = (obj:any) => {
   return (obj.name !== undefined) && (obj.rank !== undefined)
