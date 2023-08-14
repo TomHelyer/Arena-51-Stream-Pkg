@@ -109,7 +109,7 @@ const Control = () => {
         });
     });
 
-    fetch(`${apiUrl}/teams/list`).then((res) => {
+    fetch(`${apiUrl}/imagelist/${"team"}`).then((res) => {
       if (res.status === 200)
         res.json().then((val) => {
           setTeams(val);
@@ -514,14 +514,13 @@ const Control = () => {
               reader.onload = () => {
                 if (!reader.result) return;
                 let base64 = reader.result as String;
-                fetch(`${apiUrl}/teams/add`, {
+                fetch(`${apiUrl}/image/team/${uploadTeam.name}`, {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    name: uploadTeam.name,
-                    logo: base64.split(",")[1],
+                    img: base64,
                   }),
                 }).then((res: Response) => {
                   setUploadTeam({ name: "" });

@@ -1,7 +1,5 @@
-import { matchInfoObject, matchStopType, result, tableInfoObject, tableRowInfoObject } from "../types";
-
-export const generateMatches: (numTeams: number) => matchInfoObject[] = (numTeams) => {
-    let matches: matchInfoObject[] = [];
+export const generateMatches: (numTeams: number) => MatchInfoObject[] = (numTeams) => {
+    let matches: MatchInfoObject[] = [];
     let rndIndexer = indexRnd(numTeams);
     for(let home = 0; home < numTeams; home++){
         for(let away = home + 1; away < numTeams; away++){
@@ -18,7 +16,7 @@ export const generateMatches: (numTeams: number) => matchInfoObject[] = (numTeam
                 });
 
             }
-            let match: matchInfoObject = {
+            let match: MatchInfoObject = {
                 home: h,
                 away: a,
                 week,
@@ -28,7 +26,7 @@ export const generateMatches: (numTeams: number) => matchInfoObject[] = (numTeam
                     mapsPlayed: 0
                 },
                 stopCondition: {
-                    type: matchStopType.NumMaps,
+                    type: MatchStopType.NumMaps,
                     value: 4
                 }
             }
@@ -38,32 +36,32 @@ export const generateMatches: (numTeams: number) => matchInfoObject[] = (numTeam
     return matches.sort((a,b) => a.week - b.week);
 }
 
-export const matchMapResult: (res: result, match: matchInfoObject) => matchInfoObject = (res,match) =>
+export const matchMapResult: (res: Result, match: MatchInfoObject) => MatchInfoObject = (res,match) =>
 {
     match.live = true;
     switch(res){
-        case result.Home:
+        case Result.Home:
             match.score.home++;
             break;
-        case result.Away:
+        case Result.Away:
             match.score.away++;
             break;
     }
     match.score.mapsPlayed++;
 
     switch(match.stopCondition.type){
-        case matchStopType.BestOf:
+        case MatchStopType.BestOf:
             if(match.score.home === match.score.away)
                 break;
-        case matchStopType.NumMaps:
+        case MatchStopType.NumMaps:
             if(match.score.mapsPlayed >= match.stopCondition.value)
-                match.result = match.score.home > match.score.away? result.Home: match.score.home === match.score.away? result.Draw: result.Away;
+                match.result = match.score.home > match.score.away? Result.Home: match.score.home === match.score.away? Result.Draw: Result.Away;
             break;
-        case matchStopType.FirstTo:
+        case MatchStopType.FirstTo:
             if(match.score.home >= match.stopCondition.value)
-                match.result = result.Home;
+                match.result = Result.Home;
             else if(match.score.away >= match.stopCondition.value)
-                match.result = result.Away;
+                match.result = Result.Away;
             break;
     }
 
@@ -72,8 +70,8 @@ export const matchMapResult: (res: result, match: matchInfoObject) => matchInfoO
     return match;
 } 
 
-export const genTable: (matches: matchInfoObject[], numTeams: number) => tableInfoObject = (matches, numTeams) => {
-    let table: tableInfoObject = [];
+export const genTable: (matches: MatchInfoObject[], numTeams: number) => TableInfoObject = (matches, numTeams) => {
+    let table: TableInfoObject = [];
     for(let x = 0; x < numTeams; x++){
         table = [...table, {
             team: x,
@@ -85,7 +83,7 @@ export const genTable: (matches: matchInfoObject[], numTeams: number) => tableIn
             d: 0
         }];
     }
-    matches.forEach((match: matchInfoObject) => {
+    matches.forEach((match: MatchInfoObject) => {
         if(match.result === undefined && !match.live)
             return match;
         
@@ -94,17 +92,17 @@ export const genTable: (matches: matchInfoObject[], numTeams: number) => tableIn
 
         switch(match.result)
         {
-            case result.Home:
+            case Result.Home:
                 table[match.home].points = table[match.home].points + 3;
                 table[match.home].w++;
                 table[match.away].l++;
                 break;
-            case result.Away:
+            case Result.Away:
                 table[match.away].points = table[match.away].points + 3;
                 table[match.away].w++;
                 table[match.home].l++;
                 break;
-            case result.Draw:
+            case Result.Draw:
                 table[match.home].points++;
                 table[match.away].points++;
                 table[match.away].d++;
