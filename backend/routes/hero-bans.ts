@@ -21,8 +21,6 @@ export const router = (io: Server) => {
       heroBans = req.body.heroBans;
       io.emit('heroBans', {heroBans: heroBans});
 
-      console.log(heroBans);
-
       res.status(201).json({heroBans: heroBans});
     }
     else{
