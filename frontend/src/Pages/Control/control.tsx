@@ -40,17 +40,15 @@ const useStyles = createUseStyles({
     flexGrow: "1",
   },
   logoPreview: {
-    maxWidth: "200px",
-    maxHeight: "200px",
+    maxWidth: "12.5rem",
+    maxHeight: "12.5rem",
     overflow: "hidden",
+    margin: "0.5%",
   },
   logoPreviewImage: {
     width: "100%",
     height: "100%",
     objectFit: "contain",
-    top: "0",
-    left: "0",
-    margin: "10px",
   },
 });
 
