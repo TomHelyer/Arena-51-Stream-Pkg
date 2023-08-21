@@ -39,6 +39,17 @@ const useStyles = createUseStyles({
   block: {
     flexGrow: "1",
   },
+  logoPreview: {
+    maxWidth: "12.5rem",
+    maxHeight: "12.5rem",
+    overflow: "hidden",
+    margin: "0.5%",
+  },
+  logoPreviewImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+  },
 });
 
 const Control = () => {
@@ -503,7 +514,10 @@ const Control = () => {
           }}
         />
         {uploadTeam.file ? (
-          <img alt="" src={URL.createObjectURL(uploadTeam.file)} />
+          <div className={styles.logoPreview}>
+            <img alt="" src={URL.createObjectURL(uploadTeam.file)} className={styles.logoPreviewImage}
+            />
+          </div>
         ) : (
           ""
         )}
