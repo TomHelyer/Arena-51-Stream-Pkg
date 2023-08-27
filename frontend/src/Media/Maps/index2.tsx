@@ -65,7 +65,7 @@ const mapLookupAdvanced: any = {
         Paraiso,
     },
     push: {
-        // still needs the default push icon, idk where to find. fml
+        // still needs the default push icon, idk where to find. fml send help
         Colosseo,
         Esparanca,
         NewQueenStreet,

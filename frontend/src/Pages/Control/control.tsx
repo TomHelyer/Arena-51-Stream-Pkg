@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import mapLookup from "../../Media/Maps";
+import mapLookupAdvanced from "../../Media/Maps/index2";
 import CasterCams from "../CasterCams";
 import NextMap from "../NextMap";
 import Scoreboard from "../Scoreboard";
 import { io } from "socket.io-client";
 import HeroBans from "../HeroBans";
 import heroLookup from "../../Media/HeroesIcons";
+import MapOverview from "../MapOverview";
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
 
@@ -201,6 +203,13 @@ const Control = () => {
             );
           })}
         </select>
+
+        <h5>New Map Selection and Controls</h5>
+        <div>
+          
+        </div>
+
+
         <h5>Caster Info</h5>
         <div className={styles.casterData}>
           <div className={styles.block}>
@@ -572,6 +581,12 @@ const Control = () => {
             <h3>/HeroBans</h3>
             <div className={styles.scene}>
               <HeroBans />
+            </div>
+          </div>
+          <div className={styles.sceneCont}>
+            <h3>/MapOverview</h3>
+            <div className={styles.scene}>
+              <MapOverview />
             </div>
           </div>
         </div>
