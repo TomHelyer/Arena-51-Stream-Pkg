@@ -1,7 +1,7 @@
 import AntarcticPeninsula from './AntarcticPeninsula.webp';
 import BlizzardWorld from './BlizzardWorld.webp';
 import Busan from './Busan.webp';
-import CircuitRoyale from './CircuitRoyale.webp';
+import CircuitRoyal from './CircuitRoyale.webp';
 import Colosseo from './Colosseo.webp';
 import Control from './Control.webp';
 import Dorado from './Dorado.webp';
@@ -29,7 +29,7 @@ import Paraiso from './Paraiso.webp';
 import WatchpointGibraltar from './Gibraltar.webp';
 
 
-const mapLookupAdvanced: any = {
+const mapLookupAdvanced: MapLookup = {
     control: {
         AntarcticPeninsula,
         Busan,
@@ -40,7 +40,7 @@ const mapLookupAdvanced: any = {
         Oasis,
     },
     escort: {
-        CircuitRoyale,
+        CircuitRoyal,
         Dorado,
         Escort,
         Havana,

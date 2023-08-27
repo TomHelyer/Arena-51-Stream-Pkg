@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import mapLookup from "../../Media/Maps";
-import mapLookupAdvanced from "../../Media/Maps/index2";
+import mapLookupAdvanced from "../../Media/Images/Maps";
 import CasterCams from "../CasterCams";
 import NextMap from "../NextMap";
 import Scoreboard from "../Scoreboard";

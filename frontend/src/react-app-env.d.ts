@@ -57,3 +57,22 @@ type newTeam = {
     file?: File,
     target?: any,
 }
+
+
+type MapLookup = {
+    control: {
+        [key: string]: string
+    },
+    escort: {
+        [key: string]: string
+    },
+    flashpoint: {
+        [key: string]: string
+    },
+    hybrid: {
+        [key: string]: string
+    },
+    push: {
+        [key: string]: string
+    }
+}
