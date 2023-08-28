@@ -68,6 +68,7 @@ const Control = () => {
   const [uploadTeam, setUploadTeam] = useState<newTeam>({
     name: "",
   });
+  const [mapAdvanced, setMapAdvanced] = useState("");
   const styles = useStyles();
 
   const updateScore: (score: number[]) => void = (score) => {
@@ -129,6 +130,15 @@ const Control = () => {
         });
     });
 
+    fetch(`${apiUrl}/mapoverview`)
+      .then((res) => {
+        res
+          .json()
+          .then((val) => setMapAdvanced(val.mapAdvanced))
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
+
     fetch(`${apiUrl}/herobans`).then(res => {
       res.json().then(value => {
           setHeroBansState(value.heroBans);
@@ -144,6 +154,10 @@ const Control = () => {
 
     socket.on('heroBans', (value) => {
       setHeroBansState(value.heroBans);
+    });
+
+    socket.on('mapAdvanced', (value) => {
+      setMapAdvanced(value.mapAdvanced);
     });
 
     socket.on("scoreboard:mapState", (val) => {
@@ -206,7 +220,48 @@ const Control = () => {
 
         <h5>New Map Selection and Controls</h5>
         <div>
-          
+          Map1
+          <p></p>
+          <select
+          value={mapAdvanced}
+          onChange={(e) => {
+            setMapAdvanced(e.target.value);
+            fetch(`${apiUrl}/mapoverview`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ mapAdvanced: e.target.value }),
+            }).catch((err) => console.log(err));
+          }}
+        >
+          {[...Object.keys({...mapLookupAdvanced.control, ...mapLookupAdvanced.escort, ...mapLookupAdvanced.flashpoint, ...mapLookupAdvanced.hybrid, ...mapLookupAdvanced.push}),"None"].sort()
+          .map((val, key) => {
+            return (
+              <option value={val} key={key}>
+                {val}
+              </option>
+            );
+          })}
+        </select>
+        <p></p>
+        <input 
+          type="number" 
+          name="score home" 
+          min="0" 
+          max="20" 
+          value="0"
+        /> 
+        <input 
+          type="number"  
+          name="score away" 
+          min="0" 
+          max="20"
+          value="0"
+        />
+        <p></p>
+        Completed?
+        <input type="checkbox" name="map1Completed"/>
         </div>
 
 

@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import {createUseStyles} from 'react-jss';
 import { main } from '../../Media/Scenes';
+import mapLookupAdvanced from '../../Media/Images/Maps';
 
 const apiUrl = process.env.REACT_APP_API || "http://localhost:8081";
 
@@ -96,15 +98,60 @@ const createStyles = createUseStyles({
 });
 
 
+
 const MapOverview = () => {
     const styles = createStyles();
+    const [map, setMap] = useState("");
+    const [images, setImages] = useState(["",""]);
+    const [match, setMatch] = useState<MatchInfoObject>({
+        home: {
+            name: "home",
+            rank: "Bronze",
+        },
+        away: {
+            name: "away",
+            rank: "Bronze",
+        }
+    });
+    useEffect(() => {
+        fetch(`${apiUrl}/mapoverview`).then(res => {
+            res.json().then(value => {
+                setMap(value.map as string);
+            })
+            .catch (err => {
+                console.log(err);
+            });
+        }).catch(err => {
+            console.log(err);
+        });
+        Promise.all([
+        fetch(`${apiUrl}/image/team/${match.home.name}`).then(res => {
 
+            if(res.status === 200)
+                return res.json().then(val => val.image);
+
+            console.log("Error code: ", res.status);
+            return 
+        }),
+        fetch(`${apiUrl}/image/team/${match.away.name}`).then(res => {
+
+            if(res.status === 200)
+                return res.json().then(val => val.image);
+
+            console.log("Error code: ", res.status);
+            return 
+        }),
+        ]).then(val => {
+            setImages(val);
+        });
+    }, [match]);
 
     return (
         <div className={styles.cont}>
             <video className={styles.background} loop autoPlay src={main}/>
             <div className={styles.mapContainerContainer}>
                 <div className={styles.mapContainer}>
+                    {map}
                 
                     <div className={styles.gamemode}>
                     </div>
