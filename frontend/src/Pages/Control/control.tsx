@@ -250,14 +250,14 @@ const Control = () => {
           name="score home" 
           min="0" 
           max="20" 
-          value="0"
+          defaultValue="0"
         /> 
         <input 
           type="number"  
           name="score away" 
           min="0" 
           max="20"
-          value="0"
+          defaultValue="0"
         />
         <p></p>
         Completed?

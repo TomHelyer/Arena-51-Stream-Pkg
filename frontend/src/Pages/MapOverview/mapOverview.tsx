@@ -101,7 +101,7 @@ const createStyles = createUseStyles({
 
 const MapOverview = () => {
     const styles = createStyles();
-    const [map, setMap] = useState("");
+    const [mapAdvanced, setMapAdvanced] = useState("");
     const [images, setImages] = useState(["",""]);
     const [match, setMatch] = useState<MatchInfoObject>({
         home: {
@@ -116,7 +116,7 @@ const MapOverview = () => {
     useEffect(() => {
         fetch(`${apiUrl}/mapoverview`).then(res => {
             res.json().then(value => {
-                setMap(value.map as string);
+                setMapAdvanced(value.mapAdvanced as string);
             })
             .catch (err => {
                 console.log(err);
@@ -151,7 +151,7 @@ const MapOverview = () => {
             <video className={styles.background} loop autoPlay src={main}/>
             <div className={styles.mapContainerContainer}>
                 <div className={styles.mapContainer}>
-                    {map}
+                    {mapAdvanced}
                 
                     <div className={styles.gamemode}>
                     </div>
