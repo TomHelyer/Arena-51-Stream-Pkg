@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {createUseStyles} from 'react-jss';
+import { io } from 'socket.io-client';
 import { main } from '../../Media/Scenes';
 import mapLookupAdvanced from '../../Media/Images/Maps';
 
@@ -144,6 +145,13 @@ const MapOverview = () => {
         ]).then(val => {
             setImages(val);
         });
+
+        const socket = io(apiUrl);
+
+        socket.on('mapoverview', (mapAdvanced) => {
+            setMapAdvanced(mapAdvanced);
+        });
+        
     }, [match]);
 
     return (
