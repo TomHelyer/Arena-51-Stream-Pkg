@@ -52,6 +52,34 @@ const useStyles = createUseStyles({
     height: "100%",
     objectFit: "contain",
   },
+  mapControl: {
+    display: "grid",
+    gridTemplateColumns: "repeat 10%",
+    borderStyle: "solid",
+  },
+  mapControlTitle: {
+    background: "green",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  mapControlMap: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  mapControlScore: {
+    display: "flex",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  mapControlComplete: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 const Control = () => {
@@ -219,51 +247,108 @@ const Control = () => {
         </select>
 
         <h5>New Map Selection and Controls</h5>
-        <div>
-          Map1
-          <p></p>
-          <select
-          value={mapAdvanced}
-          onChange={(e) => {
-            setMapAdvanced(e.target.value);
-            fetch(`${apiUrl}/mapoverview`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ mapAdvanced: e.target.value }),
-            }).catch((err) => console.log(err));
-          }}
-        >
-          {[...Object.keys({...mapLookupAdvanced.control, ...mapLookupAdvanced.escort, ...mapLookupAdvanced.flashpoint, ...mapLookupAdvanced.hybrid, ...mapLookupAdvanced.push}),"None"].sort()
-          .map((val, key) => {
-            return (
-              <option value={val} key={key}>
-                {val}
-              </option>
-            );
-          })}
-        </select>
-        <p></p>
-        <input 
-          type="number" 
-          name="score home" 
-          min="0" 
-          max="20" 
-          defaultValue="0"
-        /> 
-        <input 
-          type="number"  
-          name="score away" 
-          min="0" 
-          max="20"
-          defaultValue="0"
-        />
-        <p></p>
-        Completed?
-        <input type="checkbox" name="map1Completed"/>
-        </div>
-
+        <div className={styles.mapControl}>
+          <div className={styles.mapControlTitle}>
+            Map1
+          </div>
+          <div className={styles.mapControlMap}>
+            <select
+            value={mapAdvanced}
+            onChange={(e) => {
+              setMapAdvanced(e.target.value);
+              fetch(`${apiUrl}/mapoverview`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ mapAdvanced: e.target.value }),
+              }).catch((err) => console.log(err));
+            }}
+            >
+              {[...Object.keys({...mapLookupAdvanced.control, ...mapLookupAdvanced.escort, ...mapLookupAdvanced.flashpoint, ...mapLookupAdvanced.hybrid, ...mapLookupAdvanced.push}),"None"].sort()
+              .map((val, key) => {
+                return (
+                  <option value={val} key={key}>
+                    {val}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <div className={styles.mapControlScore}>
+            <input 
+              type="number" 
+              name="score home"
+              style={{width: "50px"}}
+              min="0" 
+              max="20" 
+              defaultValue="0"
+            /> 
+            <input 
+              type="number"  
+              name="score away" 
+              style={{width: "50px"}}
+              min="0" 
+              max="20"
+              defaultValue="0"
+            />
+          </div>
+          <div className={styles.mapControlComplete}>
+            Completed?
+            <input type="checkbox" name="map1Completed"/>
+          </div>
+          </div>
+          <div className={styles.mapControl}>
+          <div className={styles.mapControlTitle}>
+            Map1
+          </div>
+          <div className={styles.mapControlMap}>
+            <select
+            value={mapAdvanced}
+            onChange={(e) => {
+              setMapAdvanced(e.target.value);
+              fetch(`${apiUrl}/mapoverview`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ mapAdvanced: e.target.value }),
+              }).catch((err) => console.log(err));
+            }}
+            >
+              {[...Object.keys({...mapLookupAdvanced.control, ...mapLookupAdvanced.escort, ...mapLookupAdvanced.flashpoint, ...mapLookupAdvanced.hybrid, ...mapLookupAdvanced.push}),"None"].sort()
+              .map((val, key) => {
+                return (
+                  <option value={val} key={key}>
+                    {val}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <div className={styles.mapControlScore}>
+            <input 
+              type="number" 
+              name="score home"
+              style={{width: "50px"}}
+              min="0" 
+              max="20" 
+              defaultValue="0"
+            /> 
+            <input 
+              type="number"  
+              name="score away" 
+              style={{width: "50px"}}
+              min="0" 
+              max="20"
+              defaultValue="0"
+            />
+          </div>
+          <div className={styles.mapControlComplete}>
+            Completed?
+            <input type="checkbox" name="map1Completed"/>
+          </div>
+          </div>
 
         <h5>Caster Info</h5>
         <div className={styles.casterData}>
