@@ -52,33 +52,38 @@ const useStyles = createUseStyles({
     height: "100%",
     objectFit: "contain",
   },
+  mapControlContainer: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignContent: "center",
+    gap: "0.2rem",
+    backgroundColor: "blue",
+  },
   mapControl: {
     display: "grid",
-    gridTemplateColumns: "repeat 10%",
+    gridTemplateRows: "repeat(4, 1fr)",
     borderStyle: "solid",
+    gridRowGap: "0.2rem",
+    backgroundColor: "yellow",
+    justifyItems: "center",
+    padding: "0.5rem",
   },
   mapControlTitle: {
+    gridArea: "1 / 1 /2 / 2",
     background: "green",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
   },
   mapControlMap: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    overflow: "hidden",
+    gridArea: "2 / 1 / 3 / 2",
+    background: "green",
   },
   mapControlScore: {
-    display: "flex",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    overflow: "hidden",
+    gridArea: "3 / 1 /4 / 2",
+    backgroundColor: "green",
   },
   mapControlComplete: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    gridArea: "4 / 1 / 5 / 2",
+    backgroundColor: "green",
   },
 });
 
@@ -92,7 +97,10 @@ const Control = () => {
   const [teams, setTeams] = useState<string[]>([]);
   const [heroBansEnabled, setHeroBansEnabled] = useState(false);
   const [previewsEnabled, setPreviewEnabled] = useState(false);
-  const [heroBansState, setHeroBansState] = useState<{home: string[], away: string[]}>();
+  const [heroBansState, setHeroBansState] = useState<{
+    home: string[];
+    away: string[];
+  }>();
   const [uploadTeam, setUploadTeam] = useState<newTeam>({
     name: "",
   });
@@ -110,8 +118,9 @@ const Control = () => {
     }).catch((err) => console.log(err));
   };
 
-
-  const updateBans: (bans: {home: string[], away: string[]}) => void = (bans) => {
+  const updateBans: (bans: { home: string[]; away: string[] }) => void = (
+    bans
+  ) => {
     setHeroBansState(bans);
     fetch(`${apiUrl}/heroBans`, {
       method: "POST",
@@ -167,24 +176,28 @@ const Control = () => {
       })
       .catch((err) => console.log(err));
 
-    fetch(`${apiUrl}/herobans`).then(res => {
-      res.json().then(value => {
-          setHeroBansState(value.heroBans);
+    fetch(`${apiUrl}/herobans`)
+      .then((res) => {
+        res
+          .json()
+          .then((value) => {
+            setHeroBansState(value.heroBans);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
-      .catch (err => {
-          console.log(err);
-      });
-    }).catch(err => {
+      .catch((err) => {
         console.log(err);
-    });
+      });
 
     const socket = io(apiUrl);
 
-    socket.on('heroBans', (value) => {
+    socket.on("heroBans", (value) => {
       setHeroBansState(value.heroBans);
     });
 
-    socket.on('mapAdvanced', (value) => {
+    socket.on("mapAdvanced", (value) => {
       setMapAdvanced(value.mapAdvanced);
     });
 
@@ -245,111 +258,127 @@ const Control = () => {
             );
           })}
         </select>
-
         <h5>New Map Selection and Controls</h5>
-        <div className={styles.mapControl}>
-          <div className={styles.mapControlTitle}>
-            Map1
-          </div>
-          <div className={styles.mapControlMap}>
-            <select
-            value={mapAdvanced}
-            onChange={(e) => {
-              setMapAdvanced(e.target.value);
-              fetch(`${apiUrl}/mapoverview`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ mapAdvanced: e.target.value }),
-              }).catch((err) => console.log(err));
-            }}
-            >
-              {[...Object.keys({...mapLookupAdvanced.control, ...mapLookupAdvanced.escort, ...mapLookupAdvanced.flashpoint, ...mapLookupAdvanced.hybrid, ...mapLookupAdvanced.push}),"None"].sort()
-              .map((val, key) => {
-                return (
-                  <option value={val} key={key}>
-                    {val}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <div className={styles.mapControlScore}>
-            <input 
-              type="number" 
-              name="score home"
-              style={{width: "50px"}}
-              min="0" 
-              max="20" 
-              defaultValue="0"
-            /> 
-            <input 
-              type="number"  
-              name="score away" 
-              style={{width: "50px"}}
-              min="0" 
-              max="20"
-              defaultValue="0"
-            />
-          </div>
-          <div className={styles.mapControlComplete}>
-            Completed?
-            <input type="checkbox" name="map1Completed"/>
-          </div>
+        <div className={styles.mapControlContainer}>
+          <div className={styles.mapControl}>
+            <div className={styles.mapControlTitle}>Map 1</div>
+            <div className={styles.mapControlMap}>
+              <select
+                value={mapAdvanced}
+                onChange={(e) => {
+                  setMapAdvanced(e.target.value);
+                  fetch(`${apiUrl}/mapoverview`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ mapAdvanced: e.target.value }),
+                  }).catch((err) => console.log(err));
+                }}
+              >
+                {[
+                  ...Object.keys({
+                    ...mapLookupAdvanced.control,
+                    ...mapLookupAdvanced.escort,
+                    ...mapLookupAdvanced.flashpoint,
+                    ...mapLookupAdvanced.hybrid,
+                    ...mapLookupAdvanced.push,
+                  }),
+                  "None",
+                ]
+                  .sort()
+                  .map((val, key) => {
+                    return (
+                      <option value={val} key={key}>
+                        {val}
+                      </option>
+                    );
+                  })}
+              </select>
+            </div>
+            <div className={styles.mapControlScore}>
+              <input
+                type="number"
+                name="score home"
+                style={{ width: "50px" }}
+                min="0"
+                max="20"
+                defaultValue="0"
+              />
+              <input
+                type="number"
+                name="score away"
+                style={{ width: "50px" }}
+                min="0"
+                max="20"
+                defaultValue="0"
+              />
+            </div>
+            <div className={styles.mapControlComplete}>
+              Completed?
+              <input type="checkbox" name="map1Completed" />
+            </div>
           </div>
           <div className={styles.mapControl}>
-          <div className={styles.mapControlTitle}>
-            Map1
+            <div className={styles.mapControlTitle}>Map 2</div>
+            <div className={styles.mapControlMap}>
+              <select
+                value={mapAdvanced}
+                onChange={(e) => {
+                  setMapAdvanced(e.target.value);
+                  fetch(`${apiUrl}/mapoverview`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ mapAdvanced: e.target.value }),
+                  }).catch((err) => console.log(err));
+                }}
+              >
+                {[
+                  ...Object.keys({
+                    ...mapLookupAdvanced.control,
+                    ...mapLookupAdvanced.escort,
+                    ...mapLookupAdvanced.flashpoint,
+                    ...mapLookupAdvanced.hybrid,
+                    ...mapLookupAdvanced.push,
+                  }),
+                  "None",
+                ]
+                  .sort()
+                  .map((val, key) => {
+                    return (
+                      <option value={val} key={key}>
+                        {val}
+                      </option>
+                    );
+                  })}
+              </select>
+            </div>
+            <div className={styles.mapControlScore}>
+              <input
+                type="number"
+                name="score home"
+                style={{ width: "50px" }}
+                min="0"
+                max="20"
+                defaultValue="0"
+              />
+              <input
+                type="number"
+                name="score away"
+                style={{ width: "50px" }}
+                min="0"
+                max="20"
+                defaultValue="0"
+              />
+            </div>
+            <div className={styles.mapControlComplete}>
+              Completed?
+              <input type="checkbox" name="map1Completed" />
+            </div>
           </div>
-          <div className={styles.mapControlMap}>
-            <select
-            value={mapAdvanced}
-            onChange={(e) => {
-              setMapAdvanced(e.target.value);
-              fetch(`${apiUrl}/mapoverview`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ mapAdvanced: e.target.value }),
-              }).catch((err) => console.log(err));
-            }}
-            >
-              {[...Object.keys({...mapLookupAdvanced.control, ...mapLookupAdvanced.escort, ...mapLookupAdvanced.flashpoint, ...mapLookupAdvanced.hybrid, ...mapLookupAdvanced.push}),"None"].sort()
-              .map((val, key) => {
-                return (
-                  <option value={val} key={key}>
-                    {val}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <div className={styles.mapControlScore}>
-            <input 
-              type="number" 
-              name="score home"
-              style={{width: "50px"}}
-              min="0" 
-              max="20" 
-              defaultValue="0"
-            /> 
-            <input 
-              type="number"  
-              name="score away" 
-              style={{width: "50px"}}
-              min="0" 
-              max="20"
-              defaultValue="0"
-            />
-          </div>
-          <div className={styles.mapControlComplete}>
-            Completed?
-            <input type="checkbox" name="map1Completed"/>
-          </div>
-          </div>
-
+        </div>
         <h5>Caster Info</h5>
         <div className={styles.casterData}>
           <div className={styles.block}>
@@ -486,7 +515,13 @@ const Control = () => {
           +
         </button>
         <button
-          onClick={(e) => updateScore([score[0] > 0? score[0] - 1: score[0], score[1], score[2]])}
+          onClick={(e) =>
+            updateScore([
+              score[0] > 0 ? score[0] - 1 : score[0],
+              score[1],
+              score[2],
+            ])
+          }
         >
           -
         </button>
@@ -522,7 +557,13 @@ const Control = () => {
           +
         </button>
         <button
-          onClick={(e) => updateScore([score[0], score[1] > 0? score[1] - 1: score[1], score[2]])}
+          onClick={(e) =>
+            updateScore([
+              score[0],
+              score[1] > 0 ? score[1] - 1 : score[1],
+              score[2],
+            ])
+          }
         >
           -
         </button>
@@ -533,7 +574,13 @@ const Control = () => {
           +
         </button>
         <button
-          onClick={(e) => updateScore([score[0], score[1], score[2] > 0? score[2] - 1: score[2]])}
+          onClick={(e) =>
+            updateScore([
+              score[0],
+              score[1],
+              score[2] > 0 ? score[2] - 1 : score[2],
+            ])
+          }
         >
           -
         </button>
@@ -557,81 +604,117 @@ const Control = () => {
         </button>
         <button
           onClick={(e) => {
-            updateScore([score[0] = 0, score[1] = 0, score[2] = 0])
-            updateBans({home: [""],away: [""]})
+            updateScore([(score[0] = 0), (score[1] = 0), (score[2] = 0)]);
+            updateBans({ home: [""], away: [""] });
           }}
         >
           reset score
         </button>
-
-        <h5> Hero Bans <input type="checkbox" name="heroBansEnabled" onChange={(e) => setHeroBansEnabled(e.target.checked) }/></h5> 
+        <h5>
+          {" "}
+          Hero Bans{" "}
+          <input
+            type="checkbox"
+            name="heroBansEnabled"
+            onChange={(e) => setHeroBansEnabled(e.target.checked)}
+          />
+        </h5>
         {heroBansEnabled ? (
           <>
-            
             <div className={styles.hereBanData}>
               <div className={styles.block}>
                 {match.home?.name}
-                {heroBansState?.home.map((value, key) =>  
-                <select
-                  key={key}
-                  value={heroBansState.home[key]}
-                  onChange={(e) => {
-                    const updatedSelectedValues = heroBansState.home;
-                    updatedSelectedValues[key] = e.target.value;
-                    const updatedHeroBansState = {
-                      away: heroBansState.away,
-                      home: updatedSelectedValues,
-                    };
-                    updateBans(updatedHeroBansState);
-                  }}
-                >
-                  {[...Object.keys({...heroLookup.tank, ...heroLookup.dps, ...heroLookup.support}),""].sort()
-                  .filter((v, k) => value===v || !((heroBansState.home.includes(v)) || (heroBansState.away.includes(v))))
-                  .map((val, key) => {
-                    return (
-                      <option value={val} key={key}>
-                        {val}
-                      </option>
-                    );
-                  })}
-                </select>
-                
-                )}
-               
+                {heroBansState?.home.map((value, key) => (
+                  <select
+                    key={key}
+                    value={heroBansState.home[key]}
+                    onChange={(e) => {
+                      const updatedSelectedValues = heroBansState.home;
+                      updatedSelectedValues[key] = e.target.value;
+                      const updatedHeroBansState = {
+                        away: heroBansState.away,
+                        home: updatedSelectedValues,
+                      };
+                      updateBans(updatedHeroBansState);
+                    }}
+                  >
+                    {[
+                      ...Object.keys({
+                        ...heroLookup.tank,
+                        ...heroLookup.dps,
+                        ...heroLookup.support,
+                      }),
+                      "",
+                    ]
+                      .sort()
+                      .filter(
+                        (v, k) =>
+                          value === v ||
+                          !(
+                            heroBansState.home.includes(v) ||
+                            heroBansState.away.includes(v)
+                          )
+                      )
+                      .map((val, key) => {
+                        return (
+                          <option value={val} key={key}>
+                            {val}
+                          </option>
+                        );
+                      })}
+                  </select>
+                ))}
+
                 <br></br>
                 {match.away?.name}
-                {heroBansState?.away.map((value, key) =>  
-                <select
-                  key={key}
-                  value={heroBansState.away[key]}
-                  onChange={(e) => {
-                    const updatedSelectedValues = heroBansState.away;
-                    updatedSelectedValues[key] = e.target.value;
-                    const updatedHeroBansState = {
-                      home: heroBansState.home,
-                      away: updatedSelectedValues,
-                    };
-                    fetch(`${apiUrl}/heroBans`, {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({ heroBans: updatedHeroBansState }),
-                    }).catch((err) => console.log(err));
-                  }}
-                >
-                  {[...Object.keys({...heroLookup.tank, ...heroLookup.dps, ...heroLookup.support}),""].sort()
-                    .filter((v, k) => value===v || !((heroBansState.home.includes(v)) || (heroBansState.away.includes(v))))
-                    .map((val, key) => {
-                    return (
-                      <option value={val} key={key}>
-                        {val}
-                      </option>
-                    );
-                  })}
-                </select>
-                
-                )}
+                {heroBansState?.away.map((value, key) => (
+                  <select
+                    key={key}
+                    value={heroBansState.away[key]}
+                    onChange={(e) => {
+                      const updatedSelectedValues = heroBansState.away;
+                      updatedSelectedValues[key] = e.target.value;
+                      const updatedHeroBansState = {
+                        home: heroBansState.home,
+                        away: updatedSelectedValues,
+                      };
+                      fetch(`${apiUrl}/heroBans`, {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          heroBans: updatedHeroBansState,
+                        }),
+                      }).catch((err) => console.log(err));
+                    }}
+                  >
+                    {[
+                      ...Object.keys({
+                        ...heroLookup.tank,
+                        ...heroLookup.dps,
+                        ...heroLookup.support,
+                      }),
+                      "",
+                    ]
+                      .sort()
+                      .filter(
+                        (v, k) =>
+                          value === v ||
+                          !(
+                            heroBansState.home.includes(v) ||
+                            heroBansState.away.includes(v)
+                          )
+                      )
+                      .map((val, key) => {
+                        return (
+                          <option value={val} key={key}>
+                            {val}
+                          </option>
+                        );
+                      })}
+                  </select>
+                ))}
               </div>
             </div>
           </>
@@ -664,7 +747,10 @@ const Control = () => {
         />
         {uploadTeam.file ? (
           <div className={styles.logoPreview}>
-            <img alt="" src={URL.createObjectURL(uploadTeam.file)} className={styles.logoPreviewImage}
+            <img
+              alt=""
+              src={URL.createObjectURL(uploadTeam.file)}
+              className={styles.logoPreviewImage}
             />
           </div>
         ) : (
@@ -696,8 +782,15 @@ const Control = () => {
           submit
         </button>
       </div>
-      <h5>Previews <input type="checkbox" name="previewsEnabled" onChange={(e) => setPreviewEnabled(e.target.checked) }/></h5>
-      {previewsEnabled && 
+      <h5>
+        Previews{" "}
+        <input
+          type="checkbox"
+          name="previewsEnabled"
+          onChange={(e) => setPreviewEnabled(e.target.checked)}
+        />
+      </h5>
+      {previewsEnabled && (
         <div className={styles.col}>
           <div className={styles.sceneCont}>
             <h3>/NextMap</h3>
@@ -730,7 +823,7 @@ const Control = () => {
             </div>
           </div>
         </div>
-      }
+      )}
     </>
   );
 };
