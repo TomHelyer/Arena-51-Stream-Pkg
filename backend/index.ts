@@ -4,7 +4,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import 'dotenv/config';
 
-import { ScoreObject } from "./types";
+import { ScoreObject } from "../types";
 
 import caster from './routes/caster';
 import nextMap from './routes/next-map';

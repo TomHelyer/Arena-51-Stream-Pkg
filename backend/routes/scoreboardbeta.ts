@@ -1,19 +1,8 @@
 import express from 'express';
 import { Server } from 'socket.io';
-import { MapState, ScoreObject, ScoreboardInfoObject, ScoreboardObject } from '../../types';
+import { MapState, ScoreObject, ScoreboardInfoObject, ScoreboardObjectBeta } from '../../types';
 
-const teamObjectCheck = (obj:any) => {
-  return (obj.name !== undefined) && (obj.rank !== undefined)
-}
-
-const matchInfoCheck = (obj: any) => {
-  if(obj.home && obj.away){
-      return teamObjectCheck(obj.home) && teamObjectCheck(obj.away);
-  }
-  return false;
-}
-
-let scoreboard: ScoreboardObject = {
+let scoreboard: ScoreboardObjectBeta = {
   score:[0,0,0],
   match: {
     home: {

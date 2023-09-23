@@ -1,4 +1,4 @@
-import { ScoreObject, HeroBansObject } from "../types";
+import { ScoreObject, HeroBansObject } from "../../types";
 
 export default (score: ScoreObject, heroBans: HeroBansObject) => {
     let mapNo = score[0] + score[1] + score[2];

@@ -1,7 +1,7 @@
 import express from 'express';
 import { Server } from 'socket.io';
 import updateHeroBans from '../handlers/hero-bans';
-import { HeroBansObject, ScoreObject } from '../types';
+import { HeroBansObject, ScoreObject } from '../../types';
 
 let heroBans: HeroBansObject = {
     home: [""],

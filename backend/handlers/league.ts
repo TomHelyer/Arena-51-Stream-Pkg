@@ -1,4 +1,4 @@
-import { MatchInfoObject, MatchStopType, Result, TableInfoObject } from "../types";
+import { MatchInfoObject, MatchStopType, Result, TableInfoObject } from "../../types";
 
 export const generateMatches: (numTeams: number) => MatchInfoObject[] = (numTeams) => {
     let matches: MatchInfoObject[] = [];
