@@ -7,6 +7,7 @@ import { createUseStyles } from "react-jss";
 import CasterCams from "./Pages/CasterCams";
 import Scoreboard from "./Pages/Scoreboard";
 import HeroBans from "./Pages/HeroBans";
+import MapOverview from "./Pages/MapOverview";
 
 const createStyles = createUseStyles({
   nextmap: {
@@ -44,6 +45,11 @@ const App = () => {
             </div>
           } />
         </Route>
+        <Route path="mapoverview" element={
+            <div className={styles.nextmap} >
+              <MapOverview />
+            </div>
+          } />
       </Routes>
     </BrowserRouter>
   );
