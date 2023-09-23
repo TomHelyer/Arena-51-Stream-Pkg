@@ -243,28 +243,6 @@ const Control = ({state, setState}: ControlProps) => {
             </option>
           ))}
         </select>
-        Score: {score[1]}
-        <button
-          onClick={(e) => updateScore([score[0], score[1] + 1, score[2]])}
-        >
-          +
-        </button>
-        <button
-          onClick={(e) => updateScore([score[0], score[1] > 0? score[1] - 1: score[1], score[2]])}
-        >
-          -
-        </button>
-        draws: {score[2]}
-        <button
-          onClick={(e) => updateScore([score[0], score[1], score[2] + 1])}
-        >
-          +
-        </button>
-        <button
-          onClick={(e) => updateScore([score[0], score[1], score[2] > 0? score[2] - 1: score[2]])}
-        >
-          -
-        </button>
         flip:{" "}
         <button
           onClick={(e) => {
