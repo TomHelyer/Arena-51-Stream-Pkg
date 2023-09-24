@@ -79,7 +79,6 @@ const createStyles = createUseStyles({
       width: "100%",
       height: "100%",
       objectFit: "cover",
-      opacity: "40%",
     },
   },
   mapContainerNotPlayed: {
@@ -117,13 +116,38 @@ const createStyles = createUseStyles({
     display: "flex",
     aspectRatio: "1",
     height: "100%",
-    background: "red",
+    background: "#00ADE1",
+    alignItems: "center",
+    justifyContent: "center",
+    "& img": {
+      width: "50%",
+      height: "50%",
+      objectFit: "contain",
+      filter: "invert(100%)",
+    },
   },
   gamemodeActive: {
     display: "flex",
     aspectRatio: "1/1.6",
     height: "100%",
-    background: "red",
+    background: "#00ADE1",
+    alignItems: "center",
+    justifyContent: "center",
+    "& img": {
+      width: "50%",
+      height: "50%",
+      objectFit: "contain",
+      filter: "invert(100%)",
+    },
+  },
+  gamemodeName: {
+    fontFamily: "Inter",
+    fontSize: "1.5em",
+    fontWeight: "bold",
+    color: "black",
+    position: "absolute",
+    bottom: "1rem",
+    textAlign: "center",
   },
   logo: {
     display: "flex",
@@ -135,24 +159,29 @@ const createStyles = createUseStyles({
   score: {
     display: "flex",
     aspectRatio: "1",
-    height: "100%",
-    background: "green",
-    fontSize: "9em",
+    background: "white",
+    fontFamily: "Inter",
+    fontSize: "6em",
+    fontWeight: "bold",
+    color: "#676767",
     alignItems: "center",
     justifyContent: "center",
+    textAlign: "center",
   },
   scoreActive: {
     display: "flex",
     aspectRatio: "1/1.6",
-    height: "100%",
-    background: "green",
-    fontSize: "9em",
+    background: "white",
+    fontFamily: "Inter",
+    fontSize: "6em",
+    fontWeight: "bold",
+    color: "#676767",
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: "auto",
+    textAlign: "center",
   },
   boldScore: {
-    fontWeight: "bold",
+    color: "#000000",
   },
   mapTitleActive: {
     aspectRatio: "1",
@@ -195,11 +224,10 @@ const MapOverview = () => {
       return "ERROR";
     };
 
-    // fix tomorrow
-    const getGamemodeImagePath = (mapName: string) => {
+    const getCategory = (mapName: string) => {
       for (const category in mapLookupAdvanced) {
         if (mapLookupAdvanced[category as keyof MapLookup][mapName]) {
-          return mapLookupAdvanced[category as keyof MapLookup];
+          return category;
         }
       }
       return "ERROR";
@@ -233,7 +261,10 @@ const MapOverview = () => {
           backgroundPosition: "center",
         }}
       >
-        <div className={gamemodeContainerStyle}></div>
+        <div className={gamemodeContainerStyle}>
+          <img src={getMapImagePath(getCategory(map.name))} alt="" />
+          <span className={styles.gamemodeName}>{map.name}</span>
+        </div>
         {map.isCompleted && (
           <div className={styles.logo}>this is a team logo</div>
         )}
