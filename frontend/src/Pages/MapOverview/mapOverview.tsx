@@ -26,11 +26,11 @@ const demoMatch: MatchObject = {
       {
         name: "Eichenwalde",
         score: [2, 0],
-        isCompleted: false,
+        isCompleted: true,
         isHomeAttacking: true,
       },
       {
-        name: "Dorado",
+        name: "Route66",
         score: [0, 0],
         isCompleted: false,
       },
@@ -70,6 +70,8 @@ const createStyles = createUseStyles({
     maxHeight: "30%",
     width: "80%",
     background: "black",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
     flexGrow: "1",
     marginTop: "1.5%",
     marginBottom: "1.5%",
@@ -85,7 +87,10 @@ const createStyles = createUseStyles({
     display: "flex",
     maxHeight: "30%",
     width: "80%",
-    background: "white",
+    background: "black",
+    backgroundSize: "fill",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
     flexGrow: "1",
     marginTop: "1.5%",
     marginBottom: "1.5%",
@@ -93,7 +98,7 @@ const createStyles = createUseStyles({
     "& img": {
       width: "100%",
       height: "100%",
-      objectFit: "cover",
+      objectFit: "contain",
     },
   },
   mapContainerActive: {
@@ -102,6 +107,8 @@ const createStyles = createUseStyles({
     maxHeight: "40%",
     width: "80%",
     background: "white",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
     flexGrow: "1.6",
     marginTop: "1.5%",
     marginBottom: "1.5%",
@@ -197,6 +204,22 @@ const createStyles = createUseStyles({
     aspectRatio: "1/1.6",
     height: "100%",
   },
+  containerNextMap: {
+    display: "flex",
+    alignSelf: "flex-end",
+    background: "green",
+  },
+  nextMap: {
+    fontFamily: "Inter",
+    fontSize: "2em",
+    textAlign: "center",
+  },
+  mapName: {
+    fontFamily: "Inter",
+    fontSize: "5em",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
 });
 
 const MapOverview = () => {
@@ -236,6 +259,7 @@ const MapOverview = () => {
     let mapContainerStyle;
     let scoreContainerStyle;
     let gamemodeContainerStyle;
+    let mapHasStarted: boolean;
 
     if (map.isCompleted) {
       mapContainerStyle = styles.mapContainer;
@@ -251,24 +275,37 @@ const MapOverview = () => {
       gamemodeContainerStyle = styles.gamemode;
     }
 
+    if (!map.isCompleted && map.score[0] === 0 && map.score[1] === 0) {
+      mapHasStarted = false;
+    } else {
+      mapHasStarted = true;
+    }
+
     return (
       <div
         key={index}
         className={mapContainerStyle}
         style={{
           backgroundImage: `url(${getMapImagePath(map.name)})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
         }}
       >
-        <div className={gamemodeContainerStyle}>
-          <img src={getMapImagePath(getCategory(map.name))} alt="" />
-          <span className={styles.gamemodeName}>{map.name}</span>
-        </div>
+        {mapHasStarted === true && (
+          <div className={gamemodeContainerStyle}>
+            <img src={getMapImagePath(getCategory(map.name))} alt="" />
+            <span className={styles.gamemodeName}>{map.name}</span>
+          </div>
+        )}
         {map.isCompleted && (
           <div className={styles.logo}>this is a team logo</div>
         )}
-        {mapContainerStyle !== styles.mapContainerNotPlayed && (
+        {mapContainerStyle === styles.mapContainerActive &&
+          mapHasStarted === false && (
+            <div className={styles.containerNextMap}>
+              <span className={styles.nextMap}>Next Map</span>
+              <span className={styles.mapName}>{map.name}</span>
+            </div>
+          )}
+        {mapHasStarted === true && (
           <div className={scoreContainerStyle}>
             <span
               className={
