@@ -24,14 +24,14 @@ const demoMatch: MatchObject = {
         isCompleted: true,
       },
       {
-        name: "Eichenwalde",
-        score: [2, 0],
+        name: "Hollywood",
+        score: [1, 0],
         isCompleted: true,
         isHomeAttacking: true,
       },
       {
         name: "Route66",
-        score: [0, 0],
+        score: [1, 0],
         isCompleted: false,
       },
     ],
@@ -61,20 +61,19 @@ const createStyles = createUseStyles({
     position: "relative",
     width: "100%",
     height: "87.5%",
-    paddingTop: "9.5%",
+    paddingTop: "8%",
     paddingBottom: "3%",
   },
   mapContainer: {
     display: "flex",
     justifyContent: "space-between",
-    maxHeight: "30%",
-    width: "80%",
+    width: "85%",
     background: "black",
     backgroundSize: "cover",
     backgroundPosition: "center",
     flexGrow: "1",
-    marginTop: "1.5%",
-    marginBottom: "1.5%",
+    marginTop: "1%",
+    marginBottom: "1%",
     overflow: "hidden",
     position: "relative",
     "& img": {
@@ -85,15 +84,14 @@ const createStyles = createUseStyles({
   },
   mapContainerNotPlayed: {
     display: "flex",
-    maxHeight: "30%",
-    width: "80%",
-    background: "black",
+    width: "85%",
+    background: "#141414",
     backgroundSize: "fill",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
     flexGrow: "1",
-    marginTop: "1.5%",
-    marginBottom: "1.5%",
+    marginTop: "1%",
+    marginBottom: "1%",
     overflow: "hidden",
     "& img": {
       width: "100%",
@@ -104,14 +102,30 @@ const createStyles = createUseStyles({
   mapContainerActive: {
     display: "flex",
     justifyContent: "space-between",
-    maxHeight: "40%",
-    width: "80%",
+    width: "85%",
     background: "white",
     backgroundSize: "cover",
     backgroundPosition: "center",
     flexGrow: "1.6",
-    marginTop: "1.5%",
-    marginBottom: "1.5%",
+    marginTop: "1%",
+    marginBottom: "1%",
+    overflow: "hidden",
+    "& img": {
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+    },
+  },
+  mapContainerActiveNotStarted: {
+    display: "flex",
+    justifyContent: "center",
+    width: "85%",
+    background: "white",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    flexGrow: "1.6",
+    marginTop: "1%",
+    marginBottom: "1%",
     overflow: "hidden",
     "& img": {
       width: "100%",
@@ -149,7 +163,6 @@ const createStyles = createUseStyles({
   },
   gamemodeName: {
     fontFamily: "Inter",
-    fontSize: "1.5em",
     fontWeight: "bold",
     color: "black",
     position: "absolute",
@@ -159,7 +172,7 @@ const createStyles = createUseStyles({
   logo: {
     display: "flex",
     aspectRatio: "1",
-    height: "90%",
+    height: "80%",
     alignSelf: "center",
     background: "yellow",
   },
@@ -168,7 +181,6 @@ const createStyles = createUseStyles({
     aspectRatio: "1",
     background: "white",
     fontFamily: "Inter",
-    fontSize: "6em",
     fontWeight: "bold",
     color: "#676767",
     alignItems: "center",
@@ -180,7 +192,6 @@ const createStyles = createUseStyles({
     aspectRatio: "1/1.6",
     background: "white",
     fontFamily: "Inter",
-    fontSize: "6em",
     fontWeight: "bold",
     color: "#676767",
     alignItems: "center",
@@ -198,27 +209,34 @@ const createStyles = createUseStyles({
     marginLeft: "auto",
     marginRight: "auto",
   },
-  placeholder: {
-    display: "flex",
-    justifySelf: "flex-end",
-    aspectRatio: "1/1.6",
-    height: "100%",
-  },
   containerNextMap: {
     display: "flex",
-    alignSelf: "flex-end",
-    background: "green",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   nextMap: {
     fontFamily: "Inter",
     fontSize: "2em",
+    fontWeight: "bold",
     textAlign: "center",
+    textShadow: "2px 2px 4px #FFFFFF",
   },
   mapName: {
     fontFamily: "Inter",
     fontSize: "5em",
     fontWeight: "bold",
     textAlign: "center",
+    textShadow: "6px 6px 7px #FFFFFF",
+  },
+  overlayForFinishedMaps: {
+    position: "absolute",
+    top: "0",
+    left: "0",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    overflow: "hidden",
   },
 });
 
@@ -236,6 +254,14 @@ const MapOverview = () => {
       rank: "Bronze",
     },
   });
+
+  let totalMaps: number = demoMatch.scoreboard.maps.length;
+  let dynamicHeightActive: string;
+  let dynamicHeightInactive: string;
+  let dynamicFontSizeScore: string;
+  let dynamicFontSizeGamemodeName: string;
+  let dynamicAspectRatio: string;
+
   let lastCompletedIndex = -1;
   const divs = demoMatch.scoreboard.maps.map((map, index) => {
     const getMapImagePath = (mapName: string) => {
@@ -246,6 +272,26 @@ const MapOverview = () => {
       }
       return "ERROR";
     };
+
+    if (totalMaps === 3) {
+      dynamicHeightActive = "38%";
+      dynamicHeightInactive = "28%";
+      dynamicFontSizeScore = "6em";
+      dynamicFontSizeGamemodeName = "1.5em";
+      dynamicAspectRatio = "1/1.358";
+    } else if (totalMaps === 4) {
+      dynamicHeightActive = "28%";
+      dynamicHeightInactive = "21%";
+      dynamicFontSizeScore = "6em";
+      dynamicFontSizeGamemodeName = "1.25em";
+      dynamicAspectRatio = "1/1.33";
+    } else if (totalMaps === 5) {
+      dynamicHeightActive = "22%";
+      dynamicHeightInactive = "17%";
+      dynamicFontSizeScore = "4.5em";
+      dynamicFontSizeGamemodeName = "1em";
+      dynamicAspectRatio = "1/1.3";
+    }
 
     const getCategory = (mapName: string) => {
       for (const category in mapLookupAdvanced) {
@@ -261,11 +307,23 @@ const MapOverview = () => {
     let gamemodeContainerStyle;
     let mapHasStarted: boolean;
 
+    if (!map.isCompleted && map.score[0] === 0 && map.score[1] === 0) {
+      mapHasStarted = false;
+    } else {
+      mapHasStarted = true;
+    }
+
     if (map.isCompleted) {
       mapContainerStyle = styles.mapContainer;
       lastCompletedIndex = index;
       scoreContainerStyle = styles.score;
       gamemodeContainerStyle = styles.gamemode;
+    } else if (
+      !map.isCompleted &&
+      mapHasStarted === false &&
+      lastCompletedIndex === index - 1
+    ) {
+      mapContainerStyle = styles.mapContainerActiveNotStarted;
     } else if (!map.isCompleted && lastCompletedIndex === index - 1) {
       mapContainerStyle = styles.mapContainerActive;
       scoreContainerStyle = styles.scoreActive;
@@ -275,38 +333,57 @@ const MapOverview = () => {
       gamemodeContainerStyle = styles.gamemode;
     }
 
-    if (!map.isCompleted && map.score[0] === 0 && map.score[1] === 0) {
-      mapHasStarted = false;
-    } else {
-      mapHasStarted = true;
-    }
-
     return (
       <div
         key={index}
         className={mapContainerStyle}
         style={{
           backgroundImage: `url(${getMapImagePath(map.name)})`,
+          position: "relative",
+          height:
+            mapContainerStyle === styles.mapContainerActive ||
+            mapContainerStyle === styles.mapContainerActiveNotStarted
+              ? dynamicHeightActive
+              : dynamicHeightInactive,
         }}
       >
         {mapHasStarted === true && (
-          <div className={gamemodeContainerStyle}>
+          <div
+            className={gamemodeContainerStyle}
+            style={{
+              fontSize: dynamicFontSizeGamemodeName,
+              aspectRatio:
+                mapContainerStyle === styles.mapContainerActive ||
+                mapContainerStyle === styles.mapContainerActiveNotStarted
+                  ? dynamicAspectRatio
+                  : "",
+            }}
+          >
             <img src={getMapImagePath(getCategory(map.name))} alt="" />
             <span className={styles.gamemodeName}>{map.name}</span>
           </div>
         )}
-        {map.isCompleted && (
+        {map.isCompleted && map.score[0] !== map.score[1] && (
           <div className={styles.logo}>this is a team logo</div>
         )}
-        {mapContainerStyle === styles.mapContainerActive &&
-          mapHasStarted === false && (
-            <div className={styles.containerNextMap}>
-              <span className={styles.nextMap}>Next Map</span>
-              <span className={styles.mapName}>{map.name}</span>
-            </div>
-          )}
+        {mapContainerStyle === styles.mapContainerActiveNotStarted && (
+          <div className={styles.containerNextMap}>
+            <span className={styles.nextMap}>Next Map</span>
+            <span className={styles.mapName}>{map.name}</span>
+          </div>
+        )}
         {mapHasStarted === true && (
-          <div className={scoreContainerStyle}>
+          <div
+            className={scoreContainerStyle}
+            style={{
+              fontSize: dynamicFontSizeScore,
+              aspectRatio:
+                mapContainerStyle === styles.mapContainerActive ||
+                mapContainerStyle === styles.mapContainerActiveNotStarted
+                  ? dynamicAspectRatio
+                  : "",
+            }}
+          >
             <span
               className={
                 map.isCompleted && map.score[0] > map.score[1]
