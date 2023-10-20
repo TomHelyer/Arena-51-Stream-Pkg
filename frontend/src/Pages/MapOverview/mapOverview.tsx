@@ -24,14 +24,14 @@ const demoMatch: MatchObject = {
         isCompleted: true,
       },
       {
-        name: "Hollywood",
+        name: "Suravasa",
         score: [1, 0],
-        isCompleted: true,
+        isCompleted: false,
         isHomeAttacking: true,
       },
       {
-        name: "Route66",
-        score: [1, 0],
+        name: "push",
+        score: [0, 0],
         isCompleted: false,
       },
     ],
@@ -86,7 +86,7 @@ const createStyles = createUseStyles({
     display: "flex",
     width: "85%",
     background: "#141414",
-    backgroundSize: "fill",
+    backgroundSize: "contain",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
     flexGrow: "1",
@@ -144,7 +144,6 @@ const createStyles = createUseStyles({
       width: "50%",
       height: "50%",
       objectFit: "contain",
-      filter: "invert(100%)",
     },
   },
   gamemodeActive: {
@@ -158,7 +157,6 @@ const createStyles = createUseStyles({
       width: "50%",
       height: "50%",
       objectFit: "contain",
-      filter: "invert(100%)",
     },
   },
   gamemodeName: {
@@ -338,7 +336,7 @@ const MapOverview = () => {
         key={index}
         className={mapContainerStyle}
         style={{
-          backgroundImage: `url(${getMapImagePath(map.name)})`,
+          backgroundImage: `url(${getMapImagePath(map.name)})`, // FIXME: Fix background size for visible gamemode
           position: "relative",
           height:
             mapContainerStyle === styles.mapContainerActive ||
@@ -359,7 +357,11 @@ const MapOverview = () => {
                   : "",
             }}
           >
-            <img src={getMapImagePath(getCategory(map.name))} alt="" />
+            <img
+              src={getMapImagePath(getCategory(map.name))}
+              alt=""
+              style={{ filter: "invert(100%)" }} // TODO: For some reason the filter: invert css style doesnt work if it is in the css class, but only if the images are svg. Maybe someone knows a fix?
+            />
             <span className={styles.gamemodeName}>{map.name}</span>
           </div>
         )}
