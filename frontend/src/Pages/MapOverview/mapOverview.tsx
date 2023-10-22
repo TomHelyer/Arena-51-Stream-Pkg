@@ -24,8 +24,18 @@ const demoMatch: MatchObject = {
         isCompleted: true,
       },
       {
+        name: "Route66",
+        score: [1, 2],
+        isCompleted: true,
+      },
+      {
+        name: "Hollywood",
+        score: [1, 2],
+        isCompleted: true,
+      },
+      {
         name: "Suravasa",
-        score: [1, 0],
+        score: [0, 0],
         isCompleted: false,
         isHomeAttacking: true,
       },
@@ -336,7 +346,7 @@ const MapOverview = () => {
         key={index}
         className={mapContainerStyle}
         style={{
-          backgroundImage: `url(${getMapImagePath(map.name)})`, // FIXME: Fix background size for visible gamemode
+          backgroundImage: `url(${getMapImagePath(map.name)})`,
           position: "relative",
           height:
             mapContainerStyle === styles.mapContainerActive ||
@@ -345,6 +355,9 @@ const MapOverview = () => {
               : dynamicHeightInactive,
         }}
       >
+        {map.isCompleted && (
+          <div className={styles.overlayForFinishedMaps}></div> // FIXME: Whole mapContainer is affected, the divs with Logo and Gamemode should be on top of that and not be dark
+        )}
         {mapHasStarted === true && (
           <div
             className={gamemodeContainerStyle}
@@ -357,11 +370,7 @@ const MapOverview = () => {
                   : "",
             }}
           >
-            <img
-              src={getMapImagePath(getCategory(map.name))}
-              alt=""
-              style={{ filter: "invert(100%)" }} // TODO: For some reason the filter: invert css style doesnt work if it is in the css class, but only if the images are svg. Maybe someone knows a fix?
-            />
+            <img src={getMapImagePath(getCategory(map.name))} alt="" />
             <span className={styles.gamemodeName}>{map.name}</span>
           </div>
         )}
