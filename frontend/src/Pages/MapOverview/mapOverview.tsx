@@ -8,7 +8,7 @@ const demoMatch: MatchObject = {
   id: "demoID",
   home: {
     id: 123,
-    name: "Hjönk Attack",
+    name: "Power Corgis",
     rank: "Bronze",
   },
   away: {
@@ -25,22 +25,11 @@ const demoMatch: MatchObject = {
       },
       {
         name: "Route66",
-        score: [1, 2],
+        score: [3, 0],
         isCompleted: true,
       },
       {
         name: "Hollywood",
-        score: [1, 2],
-        isCompleted: true,
-      },
-      {
-        name: "Suravasa",
-        score: [0, 0],
-        isCompleted: false,
-        isHomeAttacking: true,
-      },
-      {
-        name: "push",
         score: [0, 0],
         isCompleted: false,
       },
@@ -180,9 +169,8 @@ const createStyles = createUseStyles({
   logo: {
     display: "flex",
     aspectRatio: "1",
-    height: "80%",
+    height: "70%",
     alignSelf: "center",
-    background: "yellow",
   },
   score: {
     display: "flex",
@@ -251,7 +239,7 @@ const createStyles = createUseStyles({
 const MapOverview = () => {
   const styles = createStyles();
   const [mapAdvanced, setMapAdvanced] = useState("");
-  const [images, setImages] = useState(["", ""]);
+  const [logo, setLogo] = useState(["", ""]);
   const [match, setMatch] = useState<MatchInfoObject>({
     home: {
       name: "home",
@@ -355,9 +343,6 @@ const MapOverview = () => {
               : dynamicHeightInactive,
         }}
       >
-        {map.isCompleted && (
-          <div className={styles.overlayForFinishedMaps}></div> // FIXME: Whole mapContainer is affected, the divs with Logo and Gamemode should be on top of that and not be dark
-        )}
         {mapHasStarted === true && (
           <div
             className={gamemodeContainerStyle}
@@ -370,12 +355,23 @@ const MapOverview = () => {
                   : "",
             }}
           >
-            <img src={getMapImagePath(getCategory(map.name))} alt="" />
+            <img
+              src={getMapImagePath(getCategory(map.name))}
+              alt=""
+              style={{ filter: "invert(100%)" }} // TODO: For some reason the filter: invert css style doesnt work if it is in the css class, but only if the images are svg. Maybe someone knows a fix?
+            />
             <span className={styles.gamemodeName}>{map.name}</span>
           </div>
         )}
         {map.isCompleted && map.score[0] !== map.score[1] && (
-          <div className={styles.logo}>this is a team logo</div>
+          <div className={styles.logo}>
+            <img
+              src={`data:image/png;base64, ${
+                map.score[0] > map.score[1] ? logo[0] : logo[1]
+              }`}
+              alt={demoMatch.away.name[1]}
+            />
+          </div>
         )}
         {mapContainerStyle === styles.mapContainerActiveNotStarted && (
           <div className={styles.containerNextMap}>
@@ -436,20 +432,20 @@ const MapOverview = () => {
         console.log(err);
       });
     Promise.all([
-      fetch(`${apiUrl}/image/team/${match.home.name}`).then((res) => {
+      fetch(`${apiUrl}/image/team/${demoMatch.home.name}`).then((res) => {
         if (res.status === 200) return res.json().then((val) => val.image);
 
         console.log("Error code: ", res.status);
         return;
       }),
-      fetch(`${apiUrl}/image/team/${match.away.name}`).then((res) => {
+      fetch(`${apiUrl}/image/team/${demoMatch.away.name}`).then((res) => {
         if (res.status === 200) return res.json().then((val) => val.image);
 
         console.log("Error code: ", res.status);
         return;
       }),
     ]).then((val) => {
-      setImages(val);
+      setLogo(val);
     });
 
     const socket = io(apiUrl);
